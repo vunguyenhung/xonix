@@ -81,9 +81,6 @@ const TimeTicketAddedAction = state => ({
 	payload: state,
 });
 
-// update fieldSquares Action
-// fieldSquare has position occupied
-// by car, monsterBall or Time Ticket has their `color` changed accordingly.
 const UpdateFieldSquare = (position, color) => ({
 	type: 'UPDATE_FIELD_SQUARE',
 	payload: { position, color },
@@ -190,6 +187,10 @@ const addTimeTicketLogic = createLogic({
 			.getState()
 			.timeTickets
 			.map(ttInstance => ttInstance.getState())));
+
+		const latestTimeTicket = last(Instances.getState().timeTickets).getState();
+		dispatch(UpdateFieldSquare(latestTimeTicket.position, latestTimeTicket.color));
+
 		done();
 	},
 });
