@@ -1,3 +1,4 @@
+/* eslint-disable object-curly-newline */
 /*
 3rd Party library imports
  */
@@ -7,6 +8,7 @@ const { assoc, append } = require('ramda');
 Project file imports
  */
 const Factories = require('./factories');
+const Behaviors = require('./behaviors');
 
 const configs = {
 	fieldSquares: {
@@ -45,16 +47,8 @@ const createFieldSquares = (fieldSquaresConfig) => {
 	return fieldSquares;
 };
 
-const instances = {
-	fieldSquares: createFieldSquares(configs.fieldSquares),
-	car: Factories.Cars(configs.car),
-	game: Factories.Game(configs.game),
-	monsterBalls: [],
-};
-
-// addMonsterBall :: () => MonsterBall
-const addMonsterBall = () => {
-	const newMonsterBall = Factories.MonsterBalls({
+const createMonsterBall = () =>
+	Factories.MonsterBalls({
 		position: {
 			x: randomInt(0, configs.fieldSquares.size.x),
 			y: randomInt(0, configs.fieldSquares.size.y),
@@ -63,11 +57,28 @@ const addMonsterBall = () => {
 		heading: randomInt(0, 360),
 		speed: randomInt(0, 5),
 	});
-	Object.assign(instances, { monsterBalls: append(newMonsterBall)(instances.monsterBalls) });
-	return newMonsterBall;
+
+const InstancesBehaviors = state => ({
+	addMonsterBall: () =>
+		({
+			...state,
+			monsterBalls: append(createMonsterBall())(state.monsterBalls),
+		}),
+});
+
+const Instances = ({ fieldSquares, car, game, monsterBalls }) => {
+	const state = { fieldSquares, car, game, monsterBalls };
+	return {
+		...Behaviors.PublishableState(state),
+		...Behaviors.MutableState(state),
+		...InstancesBehaviors(state),
+	};
 };
 
-module.exports = {
-	instances,
-	addMonsterBall,
-};
+module.exports = Instances({
+	fieldSquares: createFieldSquares(configs.fieldSquares),
+	car: Factories.Cars(configs.car),
+	game: Factories.Game(configs.game),
+	monsterBalls: [],
+});
+
