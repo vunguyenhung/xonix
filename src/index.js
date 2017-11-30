@@ -54,48 +54,56 @@ const play = () => {
 			case 'n':
 				console.log('Steer Car to North');
 				console.log('-------------------------');
+				console.log('GameStates.car: ');
 				store.dispatch(SteerCarAction(0));
 				console.log(prop('car')(store.getState()));
 				break;
 			case 's':
 				console.log('Steer Car to South');
 				console.log('-------------------------');
+				console.log('GameStates.car: ');
 				store.dispatch(SteerCarAction(180));
 				console.log(prop('car')(store.getState()));
 				break;
 			case 'e':
 				console.log('Steer Car to East');
 				console.log('-------------------------');
+				console.log('GameStates.car: ');
 				store.dispatch(SteerCarAction(90));
 				console.log(prop('car')(store.getState()));
 				break;
 			case 'w':
 				console.log('Steer Car to West');
 				console.log('-------------------------');
+				console.log('GameStates.car: ');
 				store.dispatch(SteerCarAction(270));
 				console.log(prop('car')(store.getState()));
 				break;
 			case 'i':
 				console.log('Increase Car speed by one unit');
 				console.log('-------------------------');
+				console.log('GameStates.car: ');
 				store.dispatch(IncreaseCarSpeedAction());
 				console.log(prop('car')(store.getState()));
 				break;
 			case 'l':
 				console.log('Decrease Car speed by one unit');
 				console.log('-------------------------');
+				console.log('GameStates.car: ');
 				store.dispatch(DecreaseCarSpeedAction());
 				console.log(prop('car')(store.getState()));
 				break;
 			case 'b':
 				console.log('Add new Monster Ball to the world');
 				console.log('-------------------------');
+				console.log('GameStates.monsterBalls: ');
 				store.dispatch(AddMonsterBallAction());
 				console.log(prop('monsterBalls')(store.getState()));
 				break;
 			case 'm':
 				console.log('Show Game States');
 				console.log('-------------------------');
+				console.log('GameStates: ');
 				console.log(store.getState());
 				break;
 			case 'q':
