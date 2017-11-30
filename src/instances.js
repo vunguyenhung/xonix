@@ -3,6 +3,7 @@
 3rd Party library imports
  */
 const { assoc, append } = require('ramda');
+const configs = require('config');
 
 /*
 Project file imports
@@ -10,23 +11,7 @@ Project file imports
 const Factories = require('./factories');
 const Behaviors = require('./behaviors');
 
-const configs = {
-	fieldSquares: {
-		size: { x: 21, y: 21 },
-		color: '-',
-	},
-	car: {
-		position: { x: 10, y: 0 },
-		color: 'o',
-		heading: 180,
-		speed: 1,
-	},
-	game: {
-		lives: 3,
-		clock: 30,
-		level: 1,
-	},
-};
+const generateFieldSquareKey = position => `${position.x},${position.y}`;
 
 const possibleColor = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnpqrstuvwxyz123456789';
 
@@ -35,7 +20,7 @@ const randomInt = (from, to) => Math.floor(Math.random() * (to - from)) + from;
 // TODO: remove randomColor if taken, a random Color must be unique
 const randomColor = () => possibleColor[randomInt(0, possibleColor.length)];
 
-const createFieldSquares = (fieldSquaresConfig) => {
+const createFieldSquares = (fieldSquaresConfig, carConfig) => {
 	let fieldSquares = {};
 	for (let x = 0; x < fieldSquaresConfig.size.x; x += 1) {
 		for (let y = 0; y < fieldSquaresConfig.size.y; y += 1) {
@@ -45,6 +30,11 @@ const createFieldSquares = (fieldSquaresConfig) => {
 			)(fieldSquares);
 		}
 	}
+	// update car position in fieldSquare
+	const toBeChangedFieldSquare = fieldSquares[generateFieldSquareKey(carConfig.position)];
+	const newColorFieldSquareState = toBeChangedFieldSquare.setColor(carConfig.color);
+	toBeChangedFieldSquare.setState(newColorFieldSquareState);
+
 	return fieldSquares;
 };
 
@@ -74,11 +64,13 @@ const InstancesBehaviors = state => ({
 		({
 			...state,
 			monsterBalls: append(createMonsterBall())(state.monsterBalls),
+			// TODO: update fieldSquare here
 		}),
 	addTimeTicket: () =>
 		({
 			...state,
 			timeTickets: append(createTimeTicket())(state.timeTickets),
+			// TODO: update fieldSquare here
 		}),
 });
 
@@ -92,7 +84,7 @@ const Instances = ({ fieldSquares, car, game, monsterBalls, timeTickets }) => {
 };
 
 module.exports = Instances({
-	fieldSquares: createFieldSquares(configs.fieldSquares),
+	fieldSquares: createFieldSquares(configs.fieldSquares, configs.car),
 	car: Factories.Cars(configs.car),
 	game: Factories.Game(configs.game),
 	monsterBalls: [],

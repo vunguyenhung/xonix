@@ -80,6 +80,18 @@ const TimeTicketAddedAction = state => ({
 	payload: state,
 });
 
+// update fieldSquares Action
+// fieldSquare has position occupied
+// by car, monsterBall or Time Ticket has their `color` changed accordingly.
+const UpdateFieldSquares = () => ({
+	type: 'UPDATE_FIELD_SQUARES',
+});
+
+const FieldSquareUpdated = state => ({
+	type: 'FIELD_SQUARES_UPDATED',
+	payload: state,
+});
+
 const initStatesLogic = createLogic({
 	type: 'INITIATE_STATES',
 	process(_, dispatch, done) {

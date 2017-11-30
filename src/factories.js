@@ -98,6 +98,7 @@ const FieldSquares = ({ position, color }) => {
 	return {
 		...Behaviors.ChangeableColor(state),
 		...Behaviors.PublishableState(state),
+		...Behaviors.MutableState(state),
 	};
 };
 

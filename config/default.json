@@ -1,0 +1,23 @@
+{
+  "fieldSquares": {
+    "size": {
+      "x": 21,
+      "y": 21
+    },
+    "color": "-"
+  },
+  "car": {
+    "position": {
+      "x": 10,
+      "y": 0
+    },
+    "color": "o",
+    "heading": 180,
+    "speed": 1
+  },
+  "game": {
+    "lives": 3,
+    "clock": 30,
+    "level": 1
+  }
+}

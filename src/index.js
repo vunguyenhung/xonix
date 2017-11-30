@@ -17,6 +17,8 @@ const {
 	AddMonsterBallAction,
 	AddTimeTicketAction,
 } = require('./store');
+const Instances = require('./instances');
+const Utils = require('./utils');
 
 const play = () => {
 	const rl = readline.createInterface({
@@ -40,6 +42,8 @@ const play = () => {
 	console.log('b: Add new Monster Ball to the world');
 	console.log('k: Add new Time Ticket to the world');
 	console.log('d: Show Game States');
+	console.log('is: Show Instances States');
+	console.log('fs: Show Field Square Map');
 	console.log('m: Show World States');
 	console.log('q: Quit the game');
 	console.log('hello: Print `world`');
@@ -115,6 +119,16 @@ const play = () => {
 				console.log('-------------------------');
 				console.log('WorldStates.game: ');
 				console.log(prop('game')(store.getState()));
+				break;
+			case 'is':
+				console.log('Show Instances State');
+				console.log('-------------------------');
+				console.log(Instances.getState());
+				break;
+			case 'fs':
+				console.log('Show Field Square Map');
+				console.log('-------------------------');
+				Utils.printFieldSquare(store.getState().fieldSquares);
 				break;
 			case 'm':
 				console.log('Show World States');
