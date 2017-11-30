@@ -32,6 +32,7 @@ const possibleColor = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnpqrstuvwxyz123456
 
 const randomInt = (from, to) => Math.floor(Math.random() * (to - from)) + from;
 
+// TODO: remove randomColor if taken, a random Color must be unique
 const randomColor = () => possibleColor[randomInt(0, possibleColor.length)];
 
 const createFieldSquares = (fieldSquaresConfig) => {

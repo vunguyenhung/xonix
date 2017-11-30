@@ -92,6 +92,7 @@ const Cars = ({ position, color, heading, speed }) => {
 
 // changeable color
 // The field contains a grid of 100 x 100 squares. Each square is 5 x 5 units
+// TODO: change fieldSquare at the position where car, monsterBall and timeTicket is present
 const FieldSquares = ({ position, color }) => {
 	const state = { position, color };
 	return {
