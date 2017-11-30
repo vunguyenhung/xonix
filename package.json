@@ -1,0 +1,30 @@
+{
+  "name": "xonix",
+  "version": "0.0.0",
+  "description": "My Assignment for Design Pattern Subject",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vunguyenhung/xonix.git"
+  },
+  "author": "vunguyenhung",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vunguyenhung/xonix/issues"
+  },
+  "homepage": "https://github.com/vunguyenhung/xonix#readme",
+  "dependencies": {
+    "folktale": "^2.0.1",
+    "jest": "^21.2.1",
+    "ramda": "^0.25.0"
+  },
+  "devDependencies": {
+    "eslint": "^4.12.0",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-config-google": "^0.9.1",
+    "eslint-plugin-import": "^2.8.0"
+  }
+}
