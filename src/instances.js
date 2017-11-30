@@ -26,7 +26,7 @@ const configs = {
 	},
 };
 
-const possibleColor = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+const possibleColor = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnpqrstuvwxyz123456789';
 
 const randomInt = (from, to) => Math.floor(Math.random() * (to - from)) + from;
 
