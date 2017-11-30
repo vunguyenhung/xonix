@@ -86,6 +86,7 @@ const Cars = ({ position, color, heading, speed }) => {
 		...Behaviors.Steerable(state),
 		...Behaviors.ChangeableSpeed(state),
 		...Behaviors.PublishableState(state),
+		...Behaviors.MutableState(state),
 	};
 };
 

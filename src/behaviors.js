@@ -29,6 +29,10 @@ const PublishableState = state => ({
 	getState: () => state,
 });
 
+const MutableState = state => ({
+	setState: newState => Object.assign(state, newState),
+});
+
 // 0, 90, 180, or 270 (that is, north, east, south, or west)
 const Steerable = state => ({
 	steer: heading => ({ ...state, heading }),
@@ -47,6 +51,7 @@ module.exports = {
 	ChangeableSpeed,
 	Movable,
 	PublishableState,
+	MutableState,
 	Steerable,
 	GameBehaviors,
 };

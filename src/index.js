@@ -35,7 +35,7 @@ const createFieldSquares = (fieldSquaresConfig) => {
 			fieldSquares = assoc(
 				`${x},${y}`,
 				Factories.FieldSquares({ position: { x, y }, color: fieldSquaresConfig.color }),
-			);
+			)(fieldSquares);
 		}
 	}
 	return fieldSquares;
@@ -48,7 +48,10 @@ const play = (configs) => {
 		// TODO: do monster later
 	};
 	const game = Factories.Game({ ...configs.game, instances });
-	console.log(instances.car.getState());
+	const carAfterSteer = instances.car.steer(270);
+	// console.log(instances.car.setState(carAfterSteer));
+	// console.log(instances.car.getState());
+	console.log(instances);
 };
 
 play(createConfigs());
