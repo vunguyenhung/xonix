@@ -40,7 +40,9 @@ const Steerable = state => ({
 
 const GameBehaviors = state => ({
 	// TODO: return Result here, game will end if lives = 0
-	decreaseLives: () => ({ ...state, lives: state.lives - 1 }),
+	decreaseLife: () => ({ ...state, lives: state.lives - 1 }),
+	// decreaseLife will be called in redux-logic because it need validation before calling action
+
 	addTime: time => ({ ...state, time: state.time + time }),
 	// TODO: change more constant here. Implement 1 level first
 	// increaseLevel: () => ({ ...state, level: state.level + 1 }),

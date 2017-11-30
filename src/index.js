@@ -1,57 +1,88 @@
+/* eslint-disable indent,no-console */
 /*
 3rd Party library imports
  */
-const { assoc } = require('ramda');
+const readline = require('readline');
+const { prop } = require('ramda');
 
 /*
 Project file imports
  */
-const Factories = require('./factories');
+const { store, InitiateStatesAction, SteerCarAction } = require('./store');
 
-const createConfigs = () => ({
-	fieldSquares: {
-		size: { x: 21, y: 21 },
-		color: '-',
-	},
-	car: {
-		position: { x: 10, y: 0 },
-		color: 'o',
-		heading: 180,
-		speed: 1,
-	},
-	game: {
-		lives: 3,
-		clock: 30,
-		level: 1,
-	},
-});
+const play = () => {
+	const rl = readline.createInterface({
+		input: process.stdin,
+		output: process.stdout,
+		prompt: 'Xonix> ',
+	});
+	console.log('>>Initiating Game States...');
+	store.dispatch(InitiateStatesAction());
+	console.log('>>Game States initiated, use `m` command to show Game States');
 
-// fieldSquares = { ['0,0']:{...}, ['0,1']:{...} }
-
-const createFieldSquares = (fieldSquaresConfig) => {
-	let fieldSquares = {};
-	for (let x = 0; x < fieldSquaresConfig.size.x; x += 1) {
-		for (let y = 0; y < fieldSquaresConfig.size.y; y += 1) {
-			fieldSquares = assoc(
-				`${x},${y}`,
-				Factories.FieldSquares({ position: { x, y }, color: fieldSquaresConfig.color }),
-			)(fieldSquares);
+	console.log('Xonix available commands:');
+	console.log('-------------------------');
+	console.log('init: Init Game states');
+	console.log('n: Steer the car to North');
+	console.log('s: Steer the car to South');
+	console.log('e: Steer the car to East');
+	console.log('w: Steer the car to West');
+	console.log('m: Show Game States');
+	console.log('q: Quit the game');
+	console.log('hello: Print `world`');
+	rl.prompt();
+	rl.on('line', (line) => {
+		switch (line.trim()) {
+			case 'hello':
+				console.log('world!');
+				break;
+			case 'init':
+				console.log('Init Game States');
+				store.dispatch(InitiateStatesAction());
+				console.log(store.getState());
+				break;
+			case 'n':
+				console.log('Steer car to North');
+				console.log('-------------------------');
+				store.dispatch(SteerCarAction(0));
+				console.log(prop('car')(store.getState()));
+				break;
+			case 's':
+				console.log('Steer car to South');
+				console.log('-------------------------');
+				store.dispatch(SteerCarAction(180));
+				console.log(prop('car')(store.getState()));
+				break;
+			case 'e':
+				console.log('Steer car to East');
+				console.log('-------------------------');
+				store.dispatch(SteerCarAction(90));
+				console.log(prop('car')(store.getState()));
+				break;
+			case 'w':
+				console.log('Steer car to West');
+				console.log('-------------------------');
+				store.dispatch(SteerCarAction(270));
+				console.log(prop('car')(store.getState()));
+				break;
+			case 'm':
+				console.log('Show Game States');
+				console.log('-------------------------');
+				console.log(store.getState());
+				break;
+			case 'q':
+				console.log('Have a great day!');
+				process.exit(0);
+				break;
+			default:
+				console.log(`Say what? I might have heard '${line.trim()}'`);
+				break;
 		}
-	}
-	return fieldSquares;
+		rl.prompt();
+	}).on('close', () => {
+		console.log('Have a great day!');
+		process.exit(0);
+	});
 };
 
-const play = (configs) => {
-	const instances = {
-		fieldSquares: createFieldSquares(configs.fieldSquares),
-		car: Factories.Cars(configs.car),
-		// TODO: do monster later
-	};
-	const game = Factories.Game({ ...configs.game, instances });
-	const carAfterSteer = instances.car.steer(270);
-	// console.log(instances.car.setState(carAfterSteer));
-	// console.log(instances.car.getState());
-	console.log(instances);
-};
-
-play(createConfigs());
+play();

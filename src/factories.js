@@ -96,6 +96,7 @@ const FieldSquares = ({ position, color }) => {
 	const state = { position, color };
 	return {
 		...Behaviors.ChangeableColor(state),
+		...Behaviors.PublishableState(state),
 	};
 };
 
@@ -107,9 +108,13 @@ const TimeTickets = ({ position, color, time }) => {
 };
 
 // instances :: { car, monsterBalls, fieldSquares, timeTickets }
-const Game = ({ lives, clock, level, instances }) => {
-	const state = { instances, lives, clock, level, currentScore: 0, minimumScore: 50 };
-	return Behaviors.GameBehaviors(state);
+const Game = ({ lives, clock, level }) => {
+	const state = { lives, clock, level, currentScore: 0, minimumScore: 50 };
+	return {
+		...Behaviors.GameBehaviors(state),
+		...Behaviors.MutableState(state),
+		...Behaviors.PublishableState(state),
+	};
 };
 
 module.exports = {
@@ -119,10 +124,3 @@ module.exports = {
 	TimeTickets,
 	Game,
 };
-
-// Global vars:
-// - remainingLives = 3 /* When the player loses all three lives without completing a level, the game ends. */
-// - Car({ position: { x: 247.5, y: 2.5 }, heading: 0 /* North */ })
-// - Clock = 10 /* counts down, when the clock reaches zero the player loses a life */
-// - Level = 1 /* for subsequent levels the starting value of the clock goes down by 2 for each level and the value of Time Tickets goes down by 1 for each level. */
-
