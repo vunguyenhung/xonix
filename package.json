@@ -17,7 +17,6 @@
   },
   "homepage": "https://github.com/vunguyenhung/xonix#readme",
   "dependencies": {
-    "folktale": "^2.0.1",
     "ramda": "^0.25.0",
     "redux": "^3.7.2",
     "redux-logic": "^0.12.3",

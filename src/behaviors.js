@@ -23,6 +23,8 @@ const Movable = state => ({
 
 const ChangeableSpeed = state => ({
 	setSpeed: speed => ({ ...state, speed }),
+	increaseSpeed: () => ({ ...state, speed: state.speed + 1 }),
+	decreaseSpeed: () => ({ ...state, speed: state.speed - 1 }),
 });
 
 const PublishableState = state => ({

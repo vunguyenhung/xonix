@@ -8,7 +8,9 @@ const { prop } = require('ramda');
 /*
 Project file imports
  */
-const { store, InitiateStatesAction, SteerCarAction } = require('./store');
+const {
+	store, InitiateStatesAction, SteerCarAction, IncreaseCarSpeedAction, DecreaseCarSpeedAction,
+} = require('./store');
 
 const play = () => {
 	const rl = readline.createInterface({
@@ -27,6 +29,8 @@ const play = () => {
 	console.log('s: Steer the car to South');
 	console.log('e: Steer the car to East');
 	console.log('w: Steer the car to West');
+	console.log('i: Increase Car speed by one unit');
+	console.log('l: Decrease Car speed by one unit');
 	console.log('m: Show Game States');
 	console.log('q: Quit the game');
 	console.log('hello: Print `world`');
@@ -42,27 +46,39 @@ const play = () => {
 				console.log(store.getState());
 				break;
 			case 'n':
-				console.log('Steer car to North');
+				console.log('Steer Car to North');
 				console.log('-------------------------');
 				store.dispatch(SteerCarAction(0));
 				console.log(prop('car')(store.getState()));
 				break;
 			case 's':
-				console.log('Steer car to South');
+				console.log('Steer Car to South');
 				console.log('-------------------------');
 				store.dispatch(SteerCarAction(180));
 				console.log(prop('car')(store.getState()));
 				break;
 			case 'e':
-				console.log('Steer car to East');
+				console.log('Steer Car to East');
 				console.log('-------------------------');
 				store.dispatch(SteerCarAction(90));
 				console.log(prop('car')(store.getState()));
 				break;
 			case 'w':
-				console.log('Steer car to West');
+				console.log('Steer Car to West');
 				console.log('-------------------------');
 				store.dispatch(SteerCarAction(270));
+				console.log(prop('car')(store.getState()));
+				break;
+			case 'i':
+				console.log('Increase Car speed by one unit');
+				console.log('-------------------------');
+				store.dispatch(IncreaseCarSpeedAction());
+				console.log(prop('car')(store.getState()));
+				break;
+			case 'l':
+				console.log('Decrease Car speed by one unit');
+				console.log('-------------------------');
+				store.dispatch(DecreaseCarSpeedAction());
 				console.log(prop('car')(store.getState()));
 				break;
 			case 'm':
