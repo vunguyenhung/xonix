@@ -30,10 +30,10 @@ const play = () => {
 	console.log('Xonix available commands:');
 	console.log('-------------------------');
 	console.log('init: Init World states');
-	console.log('n: Steer the car to North');
-	console.log('s: Steer the car to South');
-	console.log('e: Steer the car to East');
-	console.log('w: Steer the car to West');
+	console.log('n: Steer the car to the North');
+	console.log('s: Steer the car to the South');
+	console.log('e: Steer the car to the East');
+	console.log('w: Steer the car to the West');
 	console.log('i: Increase Car speed by one unit');
 	console.log('l: Decrease Car speed by one unit');
 	console.log('b: Add new Monster Ball to the world');
