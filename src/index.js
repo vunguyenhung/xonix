@@ -111,7 +111,7 @@ const play = () => {
 				process.exit(0);
 				break;
 			default:
-				console.log(`Say what? I might have heard '${line.trim()}'`);
+				console.log(`Invalid command: '${line.trim()}'`);
 				break;
 		}
 		rl.prompt();
