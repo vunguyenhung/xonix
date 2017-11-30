@@ -66,9 +66,18 @@ const AddMonsterBallAction = () => ({
 	type: 'ADD_MONSTER_BALL',
 });
 
-const MonsterBallAddedAction = newMonsterBallsState => ({
+const MonsterBallAddedAction = state => ({
 	type: 'MONSTER_BALL_ADDED',
-	payload: newMonsterBallsState,
+	payload: state,
+});
+
+const AddTimeTicketAction = () => ({
+	type: 'ADD_TIME_TICKET',
+});
+
+const TimeTicketAddedAction = state => ({
+	type: 'TIME_TICKET_ADDED',
+	payload: state,
 });
 
 const initStatesLogic = createLogic({
@@ -132,6 +141,19 @@ const addMonsterBallLogic = createLogic({
 	},
 });
 
+const addTimeTicketLogic = createLogic({
+	type: 'ADD_TIME_TICKET',
+	process(_, dispatch, done) {
+		const addedTimeTicketInstances = Instances.addTimeTicket();
+		Instances.setState(addedTimeTicketInstances);
+		dispatch(TimeTicketAddedAction(Instances
+			.getState()
+			.timeTickets
+			.map(ttInstance => ttInstance.getState())));
+		done();
+	},
+});
+
 const initialState = {
 	monsterBalls: [],
 };
@@ -146,6 +168,8 @@ const reducer = (state = initialState, { type, payload }) => {
 			return { ...state, car: payload };
 		case 'MONSTER_BALL_ADDED':
 			return { ...state, monsterBalls: payload };
+		case 'TIME_TICKET_ADDED':
+			return { ...state, timeTickets: payload };
 		default:
 			return state;
 	}
@@ -157,6 +181,7 @@ const logics = [
 	increaseCarSpeedLogic,
 	decreaseCarSpeedLogic,
 	addMonsterBallLogic,
+	addTimeTicketLogic,
 ];
 
 const logicMiddleware = createLogicMiddleware(logics);
@@ -172,4 +197,5 @@ module.exports = {
 	IncreaseCarSpeedAction,
 	DecreaseCarSpeedAction,
 	AddMonsterBallAction,
+	AddTimeTicketAction,
 };

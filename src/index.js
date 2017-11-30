@@ -15,6 +15,7 @@ const {
 	IncreaseCarSpeedAction,
 	DecreaseCarSpeedAction,
 	AddMonsterBallAction,
+	AddTimeTicketAction,
 } = require('./store');
 
 const play = () => {
@@ -37,6 +38,7 @@ const play = () => {
 	console.log('i: Increase Car speed by one unit');
 	console.log('l: Decrease Car speed by one unit');
 	console.log('b: Add new Monster Ball to the world');
+	console.log('k: Add new Time Ticket to the world');
 	console.log('d: Show Game States');
 	console.log('m: Show World States');
 	console.log('q: Quit the game');
@@ -100,6 +102,13 @@ const play = () => {
 				console.log('WorldStates.monsterBalls: ');
 				store.dispatch(AddMonsterBallAction());
 				console.log(prop('monsterBalls')(store.getState()));
+				break;
+			case 'k':
+				console.log('Add new Time Ticket to the world');
+				console.log('-------------------------');
+				console.log('WorldStates.timeTickets: ');
+				store.dispatch(AddTimeTicketAction());
+				console.log(prop('timeTickets')(store.getState()));
 				break;
 			case 'd':
 				console.log('Show World States');

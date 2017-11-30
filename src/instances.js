@@ -59,16 +59,31 @@ const createMonsterBall = () =>
 		speed: randomInt(0, 5),
 	});
 
+const createTimeTicket = () =>
+	Factories.TimeTickets({
+		position: {
+			x: randomInt(0, configs.fieldSquares.size.x),
+			y: randomInt(0, configs.fieldSquares.size.y),
+		},
+		color: randomColor(),
+		time: randomInt(1, 6), // TODO: init this coresponse to level. Ex: level 1: 5, level 2: 4
+	});
+
 const InstancesBehaviors = state => ({
 	addMonsterBall: () =>
 		({
 			...state,
 			monsterBalls: append(createMonsterBall())(state.monsterBalls),
 		}),
+	addTimeTicket: () =>
+		({
+			...state,
+			timeTickets: append(createTimeTicket())(state.timeTickets),
+		}),
 });
 
-const Instances = ({ fieldSquares, car, game, monsterBalls }) => {
-	const state = { fieldSquares, car, game, monsterBalls };
+const Instances = ({ fieldSquares, car, game, monsterBalls, timeTickets }) => {
+	const state = { fieldSquares, car, game, monsterBalls, timeTickets };
 	return {
 		...Behaviors.PublishableState(state),
 		...Behaviors.MutableState(state),
@@ -81,5 +96,6 @@ module.exports = Instances({
 	car: Factories.Cars(configs.car),
 	game: Factories.Game(configs.game),
 	monsterBalls: [],
+	timeTickets: [],
 });
 
