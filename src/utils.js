@@ -9,7 +9,8 @@ Project file imports
 
 const printFieldSquare = (fieldSquares) => {
 	for (let y = 0; y < fieldSquareSize.y; y += 1) {
-		let xLine = `${y} `;
+		const indent = y < 10 ? ' ' : '';
+		let xLine = `${y}${indent}| `;
 		for (let x = 0; x < fieldSquareSize.y; x += 1) {
 			const currentFieldSquare = fieldSquares[`${x},${y}`];
 			xLine += ` ${currentFieldSquare.color} `;
