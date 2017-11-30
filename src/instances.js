@@ -10,8 +10,7 @@ Project file imports
  */
 const Factories = require('./factories');
 const Behaviors = require('./behaviors');
-
-const generateFieldSquareKey = position => `${position.x},${position.y}`;
+const { generateFieldSquareKey } = require('./utils');
 
 const possibleColor = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnpqrstuvwxyz123456789';
 
@@ -59,19 +58,34 @@ const createTimeTicket = () =>
 		time: randomInt(1, 6), // TODO: init this coresponse to level. Ex: level 1: 5, level 2: 4
 	});
 
+// addMonsterBall: () => {
+// 	const newMonsterBall = createMonsterBall();
+// 	const newMonsterBallsState = append(newMonsterBall)(state.monsterBalls);
+//
+// 	const newFieldSquare = state.fieldSquares[`${newMonsterBall.x},${newMonsterBall.y}`];
+// 	const newFieldSquareState = newFieldSquare.setColor(newMonsterBall.color);
+// 	newFieldSquare.setState(newFieldSquareState);
+//
+// 	return {
+// 		...state,
+// 		monsterBalls: newMonsterBallsState,
+// 	};
+// },
+
 const InstancesBehaviors = state => ({
 	addMonsterBall: () =>
 		({
 			...state,
 			monsterBalls: append(createMonsterBall())(state.monsterBalls),
-			// TODO: update fieldSquare here
 		}),
 	addTimeTicket: () =>
 		({
 			...state,
 			timeTickets: append(createTimeTicket())(state.timeTickets),
-			// TODO: update fieldSquare here
 		}),
+	// setColor: color => ({ position, color }),
+	updateFieldSquare: (position, color) =>
+		state.fieldSquares[generateFieldSquareKey(position)].setColor(color),
 });
 
 const Instances = ({ fieldSquares, car, game, monsterBalls, timeTickets }) => {

@@ -4,12 +4,13 @@
  */
 const { createStore, applyMiddleware } = require('redux');
 const { createLogicMiddleware, createLogic } = require('redux-logic');
-const { mapObjIndexed } = require('ramda');
+const { mapObjIndexed, last } = require('ramda');
 
 /*
 Project file imports
  */
 const Instances = require('./instances');
+const { generateFieldSquareKey } = require('./utils');
 
 // steps:
 // - add 2 new action: DO_SOMETHING, SOMETHING_DONE
@@ -83,20 +84,24 @@ const TimeTicketAddedAction = state => ({
 // update fieldSquares Action
 // fieldSquare has position occupied
 // by car, monsterBall or Time Ticket has their `color` changed accordingly.
-const UpdateFieldSquares = () => ({
-	type: 'UPDATE_FIELD_SQUARES',
+const UpdateFieldSquare = (position, color) => ({
+	type: 'UPDATE_FIELD_SQUARE',
+	payload: { position, color },
 });
 
 const FieldSquareUpdated = state => ({
-	type: 'FIELD_SQUARES_UPDATED',
+	type: 'FIELD_SQUARE_UPDATED',
 	payload: state,
 });
+
+const mapFieldSquaresInstancesToStates = fieldSquaresInstances =>
+	mapObjIndexed(val => val.getState())(fieldSquaresInstances);
 
 const initStatesLogic = createLogic({
 	type: 'INITIATE_STATES',
 	process(_, dispatch, done) {
 		const states = {
-			fieldSquares: mapObjIndexed(val => val.getState())(Instances.getState().fieldSquares),
+			fieldSquares: mapFieldSquaresInstancesToStates(Instances.getState().fieldSquares),
 			car: Instances.getState().car.getState(),
 			game: Instances.getState().game.getState(),
 		};
@@ -140,6 +145,25 @@ const decreaseCarSpeedLogic = createLogic({
 	},
 });
 
+const updateFieldSquareLogic = createLogic({
+	type: 'UPDATE_FIELD_SQUARE',
+	process({ action }, dispatch, done) {
+		const updatedState =
+			// { position, color }
+			Instances.updateFieldSquare(action.payload.position, action.payload.color);
+
+		Instances.getState()
+			.fieldSquares[generateFieldSquareKey(action.payload.position)]
+			.setState(updatedState);
+
+		const updatedFieldSquaresStates =
+			mapFieldSquaresInstancesToStates(Instances.getState().fieldSquares);
+		dispatch(FieldSquareUpdated(updatedFieldSquaresStates));
+
+		done();
+	},
+});
+
 const addMonsterBallLogic = createLogic({
 	type: 'ADD_MONSTER_BALL',
 	process(_, dispatch, done) {
@@ -149,6 +173,10 @@ const addMonsterBallLogic = createLogic({
 			.getState()
 			.monsterBalls
 			.map(mbInstance => mbInstance.getState())));
+
+		const latestMonsterBall = last(Instances.getState().monsterBalls).getState();
+		dispatch(UpdateFieldSquare(latestMonsterBall.position, latestMonsterBall.color));
+
 		done();
 	},
 });
@@ -182,6 +210,8 @@ const reducer = (state = initialState, { type, payload }) => {
 			return { ...state, monsterBalls: payload };
 		case 'TIME_TICKET_ADDED':
 			return { ...state, timeTickets: payload };
+		case 'FIELD_SQUARE_UPDATED':
+			return { ...state, fieldSquares: payload };
 		default:
 			return state;
 	}
@@ -194,6 +224,7 @@ const logics = [
 	decreaseCarSpeedLogic,
 	addMonsterBallLogic,
 	addTimeTicketLogic,
+	updateFieldSquareLogic,
 ];
 
 const logicMiddleware = createLogicMiddleware(logics);

@@ -18,6 +18,9 @@ const printFieldSquare = (fieldSquares) => {
 	}
 };
 
+const generateFieldSquareKey = position => `${position.x},${position.y}`;
+
 module.exports = {
 	printFieldSquare,
+	generateFieldSquareKey,
 };
