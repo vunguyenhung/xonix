@@ -9,7 +9,12 @@ const { prop } = require('ramda');
 Project file imports
  */
 const {
-	store, InitiateStatesAction, SteerCarAction, IncreaseCarSpeedAction, DecreaseCarSpeedAction,
+	store,
+	InitiateStatesAction,
+	SteerCarAction,
+	IncreaseCarSpeedAction,
+	DecreaseCarSpeedAction,
+	AddMonsterBallAction,
 } = require('./store');
 
 const play = () => {
@@ -31,6 +36,7 @@ const play = () => {
 	console.log('w: Steer the car to West');
 	console.log('i: Increase Car speed by one unit');
 	console.log('l: Decrease Car speed by one unit');
+	console.log('b: Add new Monster Ball to the world');
 	console.log('m: Show Game States');
 	console.log('q: Quit the game');
 	console.log('hello: Print `world`');
@@ -80,6 +86,12 @@ const play = () => {
 				console.log('-------------------------');
 				store.dispatch(DecreaseCarSpeedAction());
 				console.log(prop('car')(store.getState()));
+				break;
+			case 'b':
+				console.log('Add new Monster Ball to the world');
+				console.log('-------------------------');
+				store.dispatch(AddMonsterBallAction());
+				console.log(prop('monsterBalls')(store.getState()));
 				break;
 			case 'm':
 				console.log('Show Game States');

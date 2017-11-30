@@ -4,12 +4,12 @@
  */
 const { createStore, applyMiddleware } = require('redux');
 const { createLogicMiddleware, createLogic } = require('redux-logic');
-const { mapObjIndexed } = require('ramda');
+const { mapObjIndexed, append } = require('ramda');
 
 /*
 Project file imports
  */
-const Instances = require('./instances');
+const { instances, addMonsterBall } = require('./instances');
 
 // steps:
 // - add 2 new action: DO_SOMETHING, SOMETHING_DONE
@@ -62,13 +62,22 @@ const DecreaseCarSpeedFailedAction = reason => ({
 	payload: reason,
 });
 
+const AddMonsterBallAction = () => ({
+	type: 'ADD_MONSTER_BALL',
+});
+
+const MonsterBallAddedAction = newMonsterBallState => ({
+	type: 'MONSTER_BALL_ADDED',
+	payload: newMonsterBallState,
+});
+
 const initStatesLogic = createLogic({
 	type: 'INITIATE_STATES',
 	process(_, dispatch, done) {
 		const states = {
-			fieldSquares: mapObjIndexed(val => val.getState())(Instances.fieldSquares),
-			car: Instances.car.getState(),
-			game: Instances.game.getState(),
+			fieldSquares: mapObjIndexed(val => val.getState())(instances.fieldSquares),
+			car: instances.car.getState(),
+			game: instances.game.getState(),
 		};
 		dispatch(StateInitiatedAction(states));
 		done();
@@ -78,8 +87,8 @@ const initStatesLogic = createLogic({
 const steerCarLogic = createLogic({
 	type: 'STEER_CAR',
 	process({ action }, dispatch, done) {
-		const steeredCar = Instances.car.steer(action.payload);
-		Instances.car.setState(steeredCar);
+		const steeredCar = instances.car.steer(action.payload);
+		instances.car.setState(steeredCar);
 		dispatch(CarSteeredAction(steeredCar));
 		done();
 	},
@@ -88,8 +97,8 @@ const steerCarLogic = createLogic({
 const increaseCarSpeedLogic = createLogic({
 	type: 'INCREASE_CAR_SPEED',
 	process(_, dispatch, done) {
-		const carWithNewSpeed = Instances.car.increaseSpeed();
-		Instances.car.setState(carWithNewSpeed);
+		const carWithNewSpeed = instances.car.increaseSpeed();
+		instances.car.setState(carWithNewSpeed);
 		dispatch(CarSpeedIncreasedAction(carWithNewSpeed));
 		done();
 	},
@@ -103,14 +112,30 @@ const decreaseCarSpeedLogic = createLogic({
 		} else allow(action);
 	},
 	process(_, dispatch, done) {
-		const carWithNewSpeed = Instances.car.decreaseSpeed();
-		Instances.car.setState(carWithNewSpeed);
+		const carWithNewSpeed = instances.car.decreaseSpeed();
+		instances.car.setState(carWithNewSpeed);
 		dispatch(CarSpeedDeceasedAction(carWithNewSpeed));
 		done();
 	},
 });
 
-const reducer = (state = {}, { type, payload }) => {
+const addMonsterBallLogic = createLogic({
+	type: 'ADD_MONSTER_BALL',
+	process(_, dispatch, done) {
+		const newMonsterBall = addMonsterBall();
+		// TODO: instances.setState(newMonsterBall)
+		// instances.car.setState(carWithNewSpeed);
+		// instances.setState()
+		dispatch(MonsterBallAddedAction(newMonsterBall.getState()));
+		done();
+	},
+});
+
+const initialState = {
+	monsterBalls: [],
+};
+
+const reducer = (state = initialState, { type, payload }) => {
 	switch (type) {
 		case 'STATES_INITIATED':
 			return payload;
@@ -118,6 +143,8 @@ const reducer = (state = {}, { type, payload }) => {
 		case 'CAR_SPEED_DECREASED':
 		case 'CAR_STEERED':
 			return { ...state, car: payload };
+		case 'MONSTER_BALL_ADDED':
+			return { ...state, monsterBalls: append(payload)(state.monsterBalls) };
 		default:
 			return state;
 	}
@@ -128,6 +155,7 @@ const logics = [
 	steerCarLogic,
 	increaseCarSpeedLogic,
 	decreaseCarSpeedLogic,
+	addMonsterBallLogic,
 ];
 
 const logicMiddleware = createLogicMiddleware(logics);
@@ -142,4 +170,5 @@ module.exports = {
 	SteerCarAction,
 	IncreaseCarSpeedAction,
 	DecreaseCarSpeedAction,
+	AddMonsterBallAction,
 };
