@@ -74,6 +74,7 @@ const MonsterBalls = ({ position, color, heading, speed }) => {
 		...Behaviors.ChangeableColor(state),
 		...Behaviors.Movable(state),
 		...Behaviors.PublishableState(state),
+		...Behaviors.MutableState(state),
 	};
 };
 

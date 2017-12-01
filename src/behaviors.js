@@ -6,6 +6,7 @@ const gameConfig = require('config').get('game');
 /*
 Project file imports
  */
+// const { floorIfNegativeCeilIfPositive} = require('./utils');
 
 const ChangeableColor = state => ({
 	setColor: color => ({ ...state, color }),
@@ -17,8 +18,8 @@ const Movable = state => ({
 	// TODO: determine monsterBall's heading possibility. (it can only move 8 directions)
 	// 0.5 * Math.PI - south | 0 - east | -0.5 * Math.PI - north | Math.PI - west
 	move: () => {
-		const deltaX = Math.floor(Math.cos(state.heading) * state.speed);
-		const deltaY = Math.floor(Math.sin(state.heading) * state.speed);
+		const deltaX = Math.round(Math.cos(state.heading) * state.speed);
+		const deltaY = Math.round(Math.sin(state.heading) * state.speed);
 		const position = { x: state.position.x + deltaX, y: state.position.y + deltaY };
 		return { ...state, position };
 	},

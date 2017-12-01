@@ -137,6 +137,16 @@ const RestartGameAction = () => ({
 	type: 'RESTART_GAME',
 });
 
+// const MoveMonsterBallAction = index => ({
+// 	type: 'MOVE_MONSTER_BALL',
+// 	payload: index,
+// });
+//
+// const MonsterBallMovedAction = state => ({
+// 	type: 'MONSTER_BALL_ADDED',
+// 	payload: state,
+// });
+
 const mapFieldSquaresInstancesToStates = fieldSquaresInstances =>
 	mapObjIndexed(val => val.getState())(fieldSquaresInstances);
 
@@ -191,6 +201,9 @@ const decreaseCarSpeedLogic = createLogic({
 
 const updateFieldSquareLogic = createLogic({
 	type: 'UPDATE_FIELD_SQUARE',
+	// TODO: detect if the new updated field square create a closed zone of `|`
+	// => create FillOwnedZone
+	// 	=> update score
 	process({ action }, dispatch, done) {
 		const updatedState =
 			// { position, color }
@@ -309,10 +322,20 @@ const tickGameClockLogic = createLogic({
 		// TODO: validate if car is moving to the border
 	},
 	process({ getState }, dispatch, done) {
-		const previousCarState = clone(getState().car);
-		// console.log('previousCarState1', previousCarState);
+		// move monsterBall
+		const newMonsterBallStates =
+			Instances.getState().monsterBalls.map(mb => mb.move());
+		Instances.getState().monsterBalls.forEach((mb, index) => {
+			// update previous monsterBall position to -
+			dispatch(UpdateFieldSquareAction(mb.getState().position, '-'));
+			const newState = mb.setState(newMonsterBallStates[index]);
+			// update monsterBall positions
+			dispatch(UpdateFieldSquareAction(newState.position, newState.color));
+		});
 
 		// move car
+		const previousCarState = clone(getState().car);
+		// console.log('previousCarState1', previousCarState);
 		const currentCarState = Instances.getState().car.move();
 		Instances.getState().car.setState(currentCarState);
 
@@ -351,7 +374,7 @@ const tickGameClockLogic = createLogic({
 		positionsToUpdate.forEach((pos) => {
 			dispatch(UpdateFieldSquareAction(pos, '|'));
 		});
-		// positionsToUpdate: [{x: 10, y: 0}, {x: 10, y: 1}]
+		// end update car trail on fieldSquares
 
 		dispatch(GameClockTickedAction({
 			car: currentCarState,

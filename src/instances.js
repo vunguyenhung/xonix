@@ -2,7 +2,7 @@
 /*
 3rd Party library imports
  */
-const { assoc, append } = require('ramda');
+const { assoc, append, keys } = require('ramda');
 const configs = require('config');
 
 /*
@@ -10,7 +10,7 @@ Project file imports
  */
 const Factories = require('./factories');
 const Behaviors = require('./behaviors');
-const { generateFieldSquareKey } = require('./utils');
+const { generateFieldSquareKey, Heading } = require('./utils');
 
 const possibleColor = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnpqrstuvwxyz123456789';
 
@@ -18,6 +18,8 @@ const randomInt = (from, to) => Math.floor(Math.random() * (to - from)) + from;
 
 // TODO: remove randomColor if taken, a random Color must be unique
 const randomColor = () => possibleColor[randomInt(0, possibleColor.length)];
+
+const randomHeading = () => Heading[keys(Heading)[randomInt(0, 8)]];
 
 const createFieldSquares = (fieldSquaresConfig) => {
 	let fieldSquares = {};
@@ -40,8 +42,8 @@ const createMonsterBall = () =>
 			y: randomInt(0, configs.fieldSquares.size.y),
 		},
 		color: randomColor(),
-		heading: randomInt(0, 360),
-		speed: randomInt(0, 5),
+		heading: randomHeading(),
+		speed: 1,
 	});
 
 const createTimeTicket = () =>

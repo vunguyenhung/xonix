@@ -32,7 +32,11 @@ const splitFieldSquareKeyIntoPosition = compose(zipObj(['x', 'y']), split(','));
 
 const Heading = {
 	North: -0.5 * Math.PI,
+	NorthEast: 1.75 * Math.PI,
+	NorthWest: 1.25 * Math.PI,
 	South: 0.5 * Math.PI,
+	SouthEast: 0.25 * Math.PI,
+	SouthWest: 0.75 * Math.PI,
 	West: Math.PI,
 	East: 0,
 };
