@@ -44,7 +44,6 @@ const Steerable = state => ({
 });
 
 const GameBehaviors = state => ({
-	// TODO: game will end if lives = 0
 	decreaseLives: () => ({ ...state, lives: state.lives - 1 }),
 	// decreaseLife will be called in redux-logic because it need validation before calling action
 	decreaseClock: () => ({ ...state, clock: state.clock - 1 }),

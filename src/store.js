@@ -4,7 +4,9 @@
  */
 const { createStore, applyMiddleware } = require('redux');
 const { createLogicMiddleware, createLogic } = require('redux-logic');
-const { mapObjIndexed, last, forEachObjIndexed } = require('ramda');
+const {
+	mapObjIndexed, last, forEachObjIndexed, clone,
+} = require('ramda');
 
 /*
 Project file imports
@@ -14,6 +16,7 @@ const {
 	generateFieldSquareKey,
 	splitFieldSquareKeyIntoPosition,
 	isPositionAtRear,
+	Heading,
 } = require('./utils');
 
 // steps:
@@ -263,7 +266,6 @@ const addTimeTicketLogic = createLogic({
 const restartGameClockLogic = createLogic({
 	type: 'RESTART_GAME_CLOCK',
 	process(_, dispatch, done) {
-		console.log('in restart game clock logic process');
 		const gameWithNewClock = Instances.getState().game.restartClock();
 		Instances.getState().game.setState(gameWithNewClock);
 		dispatch(GameClockRestartedAction(gameWithNewClock));
@@ -285,12 +287,10 @@ const decreaseGameLivesLogic = createLogic({
 	type: 'DECREASE_GAME_LIVES',
 	validate({ getState, action }, allow, reject) {
 		if (getState().game.lives === 0) {
-			console.log('in game.lives === 0');
 			reject(RestartGameAction());
 		} else allow(action);
 	},
 	process(_, dispatch, done) {
-		console.log('in decrease game lives logic process');
 		const gameWithNewLives = Instances.getState().game.decreaseLives();
 		Instances.getState().game.setState(gameWithNewLives);
 		dispatch(GameLivesDecreasedAction(gameWithNewLives));
@@ -308,20 +308,53 @@ const tickGameClockLogic = createLogic({
 		} else allow(action);
 		// TODO: validate if car is moving to the border
 	},
-	process(_, dispatch, done) {
+	process({ getState }, dispatch, done) {
+		const previousCarState = clone(getState().car);
+		// console.log('previousCarState1', previousCarState);
+
 		// move car
-		const carWithNewPosition = Instances.getState().car.move();
-		Instances.getState().car.setState(carWithNewPosition);
+		const currentCarState = Instances.getState().car.move();
+		Instances.getState().car.setState(currentCarState);
 
 		// minus the clock
 		const gameWithNewClock = Instances.getState().game.decreaseClock();
 		Instances.getState().game.setState(gameWithNewClock);
 
+		// update car position on fieldSquares
+		dispatch(UpdateFieldSquareAction(currentCarState.position, 'o'));
+
 		// update car trail on fieldSquares
-		// 	[{}]
+		const { heading, position } = currentCarState;
+
+		const positionsToUpdate = [];
+		if (heading === Heading.South) {
+			for (let { y } = previousCarState.position; y < position.y; y += 1) {
+				positionsToUpdate.push({ x: position.x, y });
+			}
+		}
+		if (heading === Heading.North) {
+			for (let y = position.y + 1; y <= previousCarState.position.y; y += 1) {
+				positionsToUpdate.push({ x: position.x, y });
+			}
+		}
+		if (heading === Heading.West) {
+			for (let x = position.x + 1; x <= previousCarState.position.x; x += 1) {
+				positionsToUpdate.push({ x, y: position.y });
+			}
+		}
+		if (heading === Heading.East) {
+			for (let { x } = previousCarState.position; x < position.x; x += 1) {
+				positionsToUpdate.push({ x, y: position.y });
+			}
+		}
+		// console.log('positionsToUpdate: ', positionsToUpdate);
+		positionsToUpdate.forEach((pos) => {
+			dispatch(UpdateFieldSquareAction(pos, '|'));
+		});
+		// positionsToUpdate: [{x: 10, y: 0}, {x: 10, y: 1}]
 
 		dispatch(GameClockTickedAction({
-			car: carWithNewPosition,
+			car: currentCarState,
 			game: gameWithNewClock,
 		}));
 
