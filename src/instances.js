@@ -19,7 +19,7 @@ const randomInt = (from, to) => Math.floor(Math.random() * (to - from)) + from;
 // TODO: remove randomColor if taken, a random Color must be unique
 const randomColor = () => possibleColor[randomInt(0, possibleColor.length)];
 
-const createFieldSquares = (fieldSquaresConfig, carConfig) => {
+const createFieldSquares = (fieldSquaresConfig) => {
 	let fieldSquares = {};
 	for (let x = 0; x < fieldSquaresConfig.size.x; x += 1) {
 		for (let y = 0; y < fieldSquaresConfig.size.y; y += 1) {
@@ -79,7 +79,7 @@ const Instances = ({ fieldSquares, car, game, monsterBalls, timeTickets }) => {
 };
 
 module.exports = Instances({
-	fieldSquares: createFieldSquares(configs.fieldSquares, configs.car),
+	fieldSquares: createFieldSquares(configs.fieldSquares),
 	car: Factories.Cars(configs.car),
 	game: Factories.Game(configs.game),
 	monsterBalls: [],
