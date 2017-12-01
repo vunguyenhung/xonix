@@ -21,6 +21,26 @@ const {
 const Instances = require('./instances');
 const Utils = require('./utils');
 
+const showCommands = () => {
+	console.log('Xonix available commands:');
+	console.log('-------------------------');
+	console.log('n: Steer the car to the North');
+	console.log('s: Steer the car to the South');
+	console.log('e: Steer the car to the East');
+	console.log('w: Steer the car to the West');
+	console.log('i: Increase Car speed by one unit');
+	console.log('l: Decrease Car speed by one unit');
+	console.log('b: Add new Monster Ball to the world');
+	console.log('k: Add new Time Ticket to the world');
+	console.log('d: Show Game States');
+	console.log('is: Show Instances States');
+	console.log('fs: Show Field Square Map');
+	console.log('cmd: Show available commands');
+	console.log('m: Show World States');
+	console.log('q: Quit the game');
+	console.log('hello: Print `world`');
+};
+
 const play = () => {
 	const rl = readline.createInterface({
 		input: process.stdin,
@@ -38,33 +58,12 @@ const play = () => {
 	console.log('>>Field Squares initiated, use `fs` command to show Field Squares');
 
 	console.log('-------------------------');
-	console.log('Xonix available commands:');
-	console.log('-------------------------');
-	console.log('init: Init World states');
-	console.log('n: Steer the car to the North');
-	console.log('s: Steer the car to the South');
-	console.log('e: Steer the car to the East');
-	console.log('w: Steer the car to the West');
-	console.log('i: Increase Car speed by one unit');
-	console.log('l: Decrease Car speed by one unit');
-	console.log('b: Add new Monster Ball to the world');
-	console.log('k: Add new Time Ticket to the world');
-	console.log('d: Show Game States');
-	console.log('is: Show Instances States');
-	console.log('fs: Show Field Square Map');
-	console.log('m: Show World States');
-	console.log('q: Quit the game');
-	console.log('hello: Print `world`');
+	showCommands();
 	rl.prompt();
 	rl.on('line', (line) => {
 		switch (line.trim()) {
 			case 'hello':
 				console.log('world!');
-				break;
-			case 'init':
-				console.log('Init World States');
-				store.dispatch(InitiateStatesAction());
-				console.log(store.getState());
 				break;
 			case 'n':
 				console.log('Steer Car to North');
@@ -137,6 +136,9 @@ const play = () => {
 				console.log('Show Field Square Map');
 				console.log('-------------------------');
 				Utils.printFieldSquare(store.getState().fieldSquares);
+				break;
+			case 'cmd':
+				showCommands();
 				break;
 			case 'm':
 				console.log('Show World States');
