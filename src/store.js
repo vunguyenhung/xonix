@@ -148,7 +148,21 @@ const MonsterBallMovedAction = state => ({
 });
 
 const MoveMonsterBallFailedAction = reason => ({
-	type: 'MOVE_MONSTER_BALL',
+	type: 'MOVE_MONSTER_BALL_FAILED',
+	payload: reason,
+});
+
+const MoveCarAction = () => ({
+	type: 'MOVE_CAR',
+});
+
+const CarMovedAction = state => ({
+	type: 'CAR_MOVED',
+	payload: state,
+});
+
+const MoveCarFailedAction = reason => ({
+	type: 'MOVE_CAR_FAILED',
 	payload: reason,
 });
 
@@ -339,29 +353,20 @@ const moveMonsterBallLogic = createLogic({
 	},
 });
 
-const tickGameClockLogic = createLogic({
-	type: 'TICK_GAME_CLOCK',
+const moveCarLogic = createLogic({
+	type: 'MOVE_CAR',
 	validate({ getState, action }, allow, reject) {
-		if (getState().game.clock === 1) {
-			reject(DecreaseGameLivesAction());
+		const { position } = Instances.getState().car.move();
+		if (!getState().fieldSquares[generateFieldSquareKey(position)]) {
+			reject(MoveCarFailedAction('Car have no where else to move'));
 		} else allow(action);
-		// TODO: validate if car is moving to the border
 	},
 	process({ getState }, dispatch, done) {
-		// move monsterBall
-		Instances.getState().monsterBalls.forEach((mb) => {
-			dispatch(MoveMonsterBallAction(mb));
-		});
-
-		// move car
 		const previousCarState = clone(getState().car);
 		// console.log('previousCarState1', previousCarState);
 		const currentCarState = Instances.getState().car.move();
+		// console.log('currentCarState', currentCarState);
 		Instances.getState().car.setState(currentCarState);
-
-		// minus the clock
-		const gameWithNewClock = Instances.getState().game.decreaseClock();
-		Instances.getState().game.setState(gameWithNewClock);
 
 		// update car position on fieldSquares
 		dispatch(UpdateFieldSquareAction(currentCarState.position, 'o'));
@@ -394,12 +399,34 @@ const tickGameClockLogic = createLogic({
 		positionsToUpdate.forEach((pos) => {
 			dispatch(UpdateFieldSquareAction(pos, '|'));
 		});
-		// end update car trail on fieldSquares
 
-		dispatch(GameClockTickedAction({
-			car: currentCarState,
-			game: gameWithNewClock,
-		}));
+		dispatch(CarMovedAction(currentCarState));
+		done();
+	},
+});
+
+const tickGameClockLogic = createLogic({
+	type: 'TICK_GAME_CLOCK',
+	validate({ getState, action }, allow, reject) {
+		if (getState().game.clock === 1) {
+			reject(DecreaseGameLivesAction());
+		} else allow(action);
+		// TODO: validate if car is moving to the border
+	},
+	process(_, dispatch, done) {
+		// move monsterBall
+		Instances.getState().monsterBalls.forEach((mb) => {
+			dispatch(MoveMonsterBallAction(mb));
+		});
+
+		// move car
+		dispatch(MoveCarAction());
+
+		// minus the clock
+		const gameWithNewClock = Instances.getState().game.decreaseClock();
+		Instances.getState().game.setState(gameWithNewClock);
+
+		dispatch(GameClockTickedAction(gameWithNewClock));
 
 		done();
 	},
@@ -416,6 +443,7 @@ const reducer = (state = initialState, { type, payload }) => {
 		case 'CAR_SPEED_INCREASED':
 		case 'CAR_SPEED_DECREASED':
 		case 'CAR_STEERED':
+		case 'CAR_MOVED':
 			return { ...state, car: payload };
 		case 'MONSTER_BALL_MOVED':
 			return {
@@ -429,7 +457,6 @@ const reducer = (state = initialState, { type, payload }) => {
 		case 'FIELD_SQUARE_UPDATED':
 			return { ...state, fieldSquares: payload };
 		case 'GAME_CLOCK_TICKED':
-			return { ...state, car: payload.car, game: payload.game };
 		case 'GAME_LIVES_DECREASED':
 		case 'GAME_CLOCK_RESTARTED':
 			return { ...state, game: payload };
@@ -452,6 +479,7 @@ const logics = [
 	decreaseGameLivesLogic,
 	restartGameLogic,
 	moveMonsterBallLogic,
+	moveCarLogic,
 ];
 
 const logicMiddleware = createLogicMiddleware(logics);
