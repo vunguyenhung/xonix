@@ -23,13 +23,19 @@ const createFieldSquares = (fieldSquaresConfig, carConfig) => {
 	let fieldSquares = {};
 	for (let x = 0; x < fieldSquaresConfig.size.x; x += 1) {
 		for (let y = 0; y < fieldSquaresConfig.size.y; y += 1) {
+			const color = x === 0
+			|| x === fieldSquaresConfig.size.x - 1
+			|| y === 0
+			|| y === fieldSquaresConfig.size.y - 1 ? '|' : fieldSquaresConfig.color;
+
 			fieldSquares = assoc(
 				`${x},${y}`,
-				Factories.FieldSquares({ position: { x, y }, color: fieldSquaresConfig.color }),
+				Factories.FieldSquares({ position: { x, y }, color }),
 			)(fieldSquares);
 		}
 	}
-	// update car position in fieldSquare
+
+	// TODO: use action to update car position
 	const toBeChangedFieldSquare = fieldSquares[generateFieldSquareKey(carConfig.position)];
 	const newColorFieldSquareState = toBeChangedFieldSquare.setColor(carConfig.color);
 	toBeChangedFieldSquare.setState(newColorFieldSquareState);
@@ -57,20 +63,6 @@ const createTimeTicket = () =>
 		color: randomColor(),
 		time: randomInt(1, 6), // TODO: init this coresponse to level. Ex: level 1: 5, level 2: 4
 	});
-
-// addMonsterBall: () => {
-// 	const newMonsterBall = createMonsterBall();
-// 	const newMonsterBallsState = append(newMonsterBall)(state.monsterBalls);
-//
-// 	const newFieldSquare = state.fieldSquares[`${newMonsterBall.x},${newMonsterBall.y}`];
-// 	const newFieldSquareState = newFieldSquare.setColor(newMonsterBall.color);
-// 	newFieldSquare.setState(newFieldSquareState);
-//
-// 	return {
-// 		...state,
-// 		monsterBalls: newMonsterBallsState,
-// 	};
-// },
 
 const InstancesBehaviors = state => ({
 	addMonsterBall: () =>
