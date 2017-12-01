@@ -2,6 +2,7 @@
 3rd Party library imports
  */
 const fieldSquareSize = require('config').get('fieldSquares.size');
+const { split, zipObj, compose } = require('ramda');
 
 /*
 Project file imports
@@ -19,9 +20,19 @@ const printFieldSquare = (fieldSquares) => {
 	}
 };
 
+const isPositionAtRear = ({ x, y }) =>
+	+x === 0
+	|| +x === fieldSquareSize.x - 1
+	|| +y === 0
+	|| +y === fieldSquareSize.y - 1;
+
 const generateFieldSquareKey = position => `${position.x},${position.y}`;
+
+const splitFieldSquareKeyIntoPosition = compose(zipObj(['x', 'y']), split(','));
 
 module.exports = {
 	printFieldSquare,
 	generateFieldSquareKey,
+	splitFieldSquareKeyIntoPosition,
+	isPositionAtRear,
 };

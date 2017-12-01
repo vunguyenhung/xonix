@@ -4,13 +4,14 @@
  */
 const { createStore, applyMiddleware } = require('redux');
 const { createLogicMiddleware, createLogic } = require('redux-logic');
-const { mapObjIndexed, last } = require('ramda');
+const { mapObjIndexed, last, forEachObjIndexed } = require('ramda');
 
 /*
 Project file imports
  */
 const Instances = require('./instances');
-const { generateFieldSquareKey } = require('./utils');
+const { generateFieldSquareKey, splitFieldSquareKeyIntoPosition, isPositionAtRear } = require(
+	'./utils');
 
 // steps:
 // - add 2 new action: DO_SOMETHING, SOMETHING_DONE
@@ -28,6 +29,14 @@ const InitiateStatesAction = () => ({
 const StateInitiatedAction = states => ({
 	type: 'STATES_INITIATED',
 	payload: states,
+});
+
+const InitiateFieldSquaresAction = () => ({
+	type: 'INITIATE_FIELD_SQUARES',
+});
+
+const FieldSquaresInitiatedAction = () => ({
+	type: 'FIELD_SQUARES_INITIATED',
 });
 
 const SteerCarAction = heading => ({
@@ -161,6 +170,26 @@ const updateFieldSquareLogic = createLogic({
 	},
 });
 
+const initiateFieldSquaresLogic = createLogic({
+	type: 'INITIATE_FIELD_SQUARES',
+	process({ getState }, dispatch, done) {
+		// set default owned squares
+		forEachObjIndexed((fs, key) => {
+			const fsPosition = splitFieldSquareKeyIntoPosition(key);
+			if (isPositionAtRear(fsPosition)) {
+				dispatch(UpdateFieldSquare(fsPosition, '.'));
+			}
+		})(Instances.getState().fieldSquares);
+
+		// set car color
+		const carState = getState().car;
+		dispatch(UpdateFieldSquare(carState.position, carState.color));
+
+		dispatch(FieldSquaresInitiatedAction());
+		done();
+	},
+});
+
 const addMonsterBallLogic = createLogic({
 	type: 'ADD_MONSTER_BALL',
 	process(_, dispatch, done) {
@@ -226,6 +255,7 @@ const logics = [
 	addMonsterBallLogic,
 	addTimeTicketLogic,
 	updateFieldSquareLogic,
+	initiateFieldSquaresLogic,
 ];
 
 const logicMiddleware = createLogicMiddleware(logics);
@@ -242,4 +272,5 @@ module.exports = {
 	DecreaseCarSpeedAction,
 	AddMonsterBallAction,
 	AddTimeTicketAction,
+	InitiateFieldSquaresAction,
 };

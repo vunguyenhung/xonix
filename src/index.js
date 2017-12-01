@@ -16,6 +16,7 @@ const {
 	DecreaseCarSpeedAction,
 	AddMonsterBallAction,
 	AddTimeTicketAction,
+	InitiateFieldSquaresAction,
 } = require('./store');
 const Instances = require('./instances');
 const Utils = require('./utils');
@@ -30,6 +31,13 @@ const play = () => {
 	store.dispatch(InitiateStatesAction());
 	console.log('>>World States initiated, use `m` command to show World States');
 
+	console.log('-------------------------');
+
+	console.log('>>Initiating Field Squares...');
+	store.dispatch(InitiateFieldSquaresAction());
+	console.log('>>Field Squares initiated, use `fs` command to show Field Squares');
+
+	console.log('-------------------------');
 	console.log('Xonix available commands:');
 	console.log('-------------------------');
 	console.log('init: Init World states');

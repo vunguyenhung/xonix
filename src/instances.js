@@ -23,22 +23,12 @@ const createFieldSquares = (fieldSquaresConfig, carConfig) => {
 	let fieldSquares = {};
 	for (let x = 0; x < fieldSquaresConfig.size.x; x += 1) {
 		for (let y = 0; y < fieldSquaresConfig.size.y; y += 1) {
-			const color = x === 0
-			|| x === fieldSquaresConfig.size.x - 1
-			|| y === 0
-			|| y === fieldSquaresConfig.size.y - 1 ? '|' : fieldSquaresConfig.color;
-
 			fieldSquares = assoc(
 				`${x},${y}`,
-				Factories.FieldSquares({ position: { x, y }, color }),
+				Factories.FieldSquares({ position: { x, y }, color: fieldSquaresConfig.color }),
 			)(fieldSquares);
 		}
 	}
-
-	// TODO: use action to update car position
-	const toBeChangedFieldSquare = fieldSquares[generateFieldSquareKey(carConfig.position)];
-	const newColorFieldSquareState = toBeChangedFieldSquare.setColor(carConfig.color);
-	toBeChangedFieldSquare.setState(newColorFieldSquareState);
 
 	return fieldSquares;
 };
@@ -75,7 +65,6 @@ const InstancesBehaviors = state => ({
 			...state,
 			timeTickets: append(createTimeTicket())(state.timeTickets),
 		}),
-	// setColor: color => ({ position, color }),
 	updateFieldSquare: (position, color) =>
 		state.fieldSquares[generateFieldSquareKey(position)].setColor(color),
 });
