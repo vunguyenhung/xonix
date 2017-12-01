@@ -1,6 +1,7 @@
 /*
 3rd Party library imports
  */
+const gameConfig = require('config').get('game');
 
 /*
 Project file imports
@@ -44,9 +45,10 @@ const Steerable = state => ({
 
 const GameBehaviors = state => ({
 	// TODO: game will end if lives = 0
-	decreaseLife: () => ({ ...state, lives: state.lives - 1 }),
+	decreaseLives: () => ({ ...state, lives: state.lives - 1 }),
 	// decreaseLife will be called in redux-logic because it need validation before calling action
 	decreaseClock: () => ({ ...state, clock: state.clock - 1 }),
+	restartClock: () => ({ ...state, clock: gameConfig.clock }),
 	addTime: time => ({ ...state, time: state.time + time }),
 	// TODO: change more constant here. Implement 1 level first
 	// increaseLevel: () => ({ ...state, level: state.level + 1 }),

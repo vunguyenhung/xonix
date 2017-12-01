@@ -67,6 +67,13 @@ const InstancesBehaviors = state => ({
 		}),
 	updateFieldSquare: (position, color) =>
 		state.fieldSquares[generateFieldSquareKey(position)].setColor(color),
+	initState: () => ({
+		fieldSquares: createFieldSquares(configs.fieldSquares),
+		car: Factories.Cars(configs.car),
+		game: Factories.Game(configs.game),
+		monsterBalls: [],
+		timeTickets: [],
+	}),
 });
 
 const Instances = ({ fieldSquares, car, game, monsterBalls, timeTickets }) => {

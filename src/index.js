@@ -52,14 +52,8 @@ const play = () => {
 	console.log('>>Initiating World States...');
 	store.dispatch(InitiateStatesAction());
 	console.log('>>World States initiated, use `m` command to show World States');
-
 	console.log('-------------------------');
 
-	console.log('>>Initiating Field Squares...');
-	store.dispatch(InitiateFieldSquaresAction());
-	console.log('>>Field Squares initiated, use `fs` command to show Field Squares');
-
-	console.log('-------------------------');
 	showCommands();
 	console.log('-------------------------');
 	rl.prompt();

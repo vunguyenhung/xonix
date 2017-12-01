@@ -112,9 +112,26 @@ const GameClockTickedAction = state => ({
 	payload: state,
 });
 
-const TickGameClockFailedAction = reason => ({
-	type: 'TICK_GAME_CLOCK_FAILED',
-	payload: reason,
+const DecreaseGameLivesAction = () => ({
+	type: 'DECREASE_GAME_LIVES',
+});
+
+const GameLivesDecreasedAction = state => ({
+	type: 'GAME_LIVES_DECREASED',
+	payload: state,
+});
+
+const RestartGameClockAction = () => ({
+	type: 'RESTART_GAME_CLOCK',
+});
+
+const GameClockRestartedAction = state => ({
+	type: 'GAME_CLOCK_RESTARTED',
+	payload: state,
+});
+
+const RestartGameAction = () => ({
+	type: 'RESTART_GAME',
 });
 
 const mapFieldSquaresInstancesToStates = fieldSquaresInstances =>
@@ -129,6 +146,7 @@ const initStatesLogic = createLogic({
 			game: Instances.getState().game.getState(),
 		};
 		dispatch(StateInitiatedAction(states));
+		dispatch(InitiateFieldSquaresAction());
 		done();
 	},
 });
@@ -200,6 +218,7 @@ const initiateFieldSquaresLogic = createLogic({
 
 		// set car color
 		const carState = getState().car;
+		console.log('carState', getState().car); // undefined
 		dispatch(UpdateFieldSquareAction(carState.position, carState.color));
 
 		dispatch(FieldSquaresInitiatedAction());
@@ -241,13 +260,53 @@ const addTimeTicketLogic = createLogic({
 	},
 });
 
+const restartGameClockLogic = createLogic({
+	type: 'RESTART_GAME_CLOCK',
+	process(_, dispatch, done) {
+		console.log('in restart game clock logic process');
+		const gameWithNewClock = Instances.getState().game.restartClock();
+		Instances.getState().game.setState(gameWithNewClock);
+		dispatch(GameClockRestartedAction(gameWithNewClock));
+		done();
+	},
+});
+
+const restartGameLogic = createLogic({
+	type: 'RESTART_GAME',
+	process(_, dispatch, done) {
+		const instancesInitState = Instances.initState();
+		Instances.setState(instancesInitState);
+		dispatch(InitiateStatesAction());
+		done();
+	},
+});
+
+const decreaseGameLivesLogic = createLogic({
+	type: 'DECREASE_GAME_LIVES',
+	validate({ getState, action }, allow, reject) {
+		if (getState().game.lives === 0) {
+			console.log('in game.lives === 0');
+			reject(RestartGameAction());
+		} else allow(action);
+	},
+	process(_, dispatch, done) {
+		console.log('in decrease game lives logic process');
+		const gameWithNewLives = Instances.getState().game.decreaseLives();
+		Instances.getState().game.setState(gameWithNewLives);
+		dispatch(GameLivesDecreasedAction(gameWithNewLives));
+
+		dispatch(RestartGameClockAction());
+		done();
+	},
+});
+
 const tickGameClockLogic = createLogic({
 	type: 'TICK_GAME_CLOCK',
 	validate({ getState, action }, allow, reject) {
-		// TODO: validate if car is moving to the border
-		if (getState().game.clock === 0) { // TODO: clock == 0 ? game lost a live
-			reject(TickGameClockFailedAction('Time is already 0'));
+		if (getState().game.clock === 1) {
+			reject(DecreaseGameLivesAction());
 		} else allow(action);
+		// TODO: validate if car is moving to the border
 	},
 	process(_, dispatch, done) {
 		// move car
@@ -290,6 +349,9 @@ const reducer = (state = initialState, { type, payload }) => {
 			return { ...state, fieldSquares: payload };
 		case 'GAME_CLOCK_TICKED':
 			return { ...state, car: payload.car, game: payload.game };
+		case 'GAME_LIVES_DECREASED':
+		case 'GAME_CLOCK_RESTARTED':
+			return { ...state, game: payload };
 		default:
 			return state;
 	}
@@ -305,6 +367,9 @@ const logics = [
 	updateFieldSquareLogic,
 	initiateFieldSquaresLogic,
 	tickGameClockLogic,
+	restartGameClockLogic,
+	decreaseGameLivesLogic,
+	restartGameLogic,
 ];
 
 const logicMiddleware = createLogicMiddleware(logics);
