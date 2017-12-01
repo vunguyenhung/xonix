@@ -17,6 +17,7 @@ const {
 	AddMonsterBallAction,
 	AddTimeTicketAction,
 	InitiateFieldSquaresAction,
+	TickGameClockAction,
 } = require('./store');
 const Instances = require('./instances');
 const Utils = require('./utils');
@@ -32,6 +33,7 @@ const showCommands = () => {
 	console.log('l: Decrease Car speed by one unit');
 	console.log('b: Add new Monster Ball to the world');
 	console.log('k: Add new Time Ticket to the world');
+	console.log('t: Tick the game clock');
 	console.log('d: Show Game States');
 	console.log('is: Show Instances States');
 	console.log('fs: Show Field Square Map');
@@ -59,6 +61,7 @@ const play = () => {
 
 	console.log('-------------------------');
 	showCommands();
+	console.log('-------------------------');
 	rl.prompt();
 	rl.on('line', (line) => {
 		switch (line.trim()) {
@@ -69,28 +72,28 @@ const play = () => {
 				console.log('Steer Car to North');
 				console.log('-------------------------');
 				console.log('WorldStates.car: ');
-				store.dispatch(SteerCarAction(0));
+				store.dispatch(SteerCarAction(-0.5 * Math.PI));
 				console.log(prop('car')(store.getState()));
 				break;
 			case 's':
 				console.log('Steer Car to South');
 				console.log('-------------------------');
 				console.log('WorldStates.car: ');
-				store.dispatch(SteerCarAction(180));
+				store.dispatch(SteerCarAction(0.5 * Math.PI));
 				console.log(prop('car')(store.getState()));
 				break;
 			case 'e':
 				console.log('Steer Car to East');
 				console.log('-------------------------');
 				console.log('WorldStates.car: ');
-				store.dispatch(SteerCarAction(90));
+				store.dispatch(SteerCarAction(0));
 				console.log(prop('car')(store.getState()));
 				break;
 			case 'w':
 				console.log('Steer Car to West');
 				console.log('-------------------------');
 				console.log('WorldStates.car: ');
-				store.dispatch(SteerCarAction(270));
+				store.dispatch(SteerCarAction(Math.PI));
 				console.log(prop('car')(store.getState()));
 				break;
 			case 'i':
@@ -120,6 +123,16 @@ const play = () => {
 				console.log('WorldStates.timeTickets: ');
 				store.dispatch(AddTimeTicketAction());
 				console.log(prop('timeTickets')(store.getState()));
+				break;
+			case 't':
+				console.log('Tick the game clock');
+				console.log('-------------------------');
+				store.dispatch(TickGameClockAction());
+				console.log('WorldStates.game: ');
+				console.log(prop('game')(store.getState()));
+				console.log('-------------------------');
+				console.log('WorldStates.car: ');
+				console.log(prop('car')(store.getState()));
 				break;
 			case 'd':
 				console.log('Show World States');

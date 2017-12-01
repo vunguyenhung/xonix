@@ -79,8 +79,8 @@ const MonsterBalls = ({ position, color, heading, speed }) => {
 
 // Cars({position, heading, speed, color})
 // heading :: [0, 90, 180, 270]
-const Cars = ({ position, color, heading, speed }) => {
-	const state = { position, color, heading, speed };
+const Cars = ({ position, color, speed }) => {
+	const state = { position, color, speed, heading: 0.5 * Math.PI };
 	return {
 		...Behaviors.Movable(state),
 		...Behaviors.Steerable(state),

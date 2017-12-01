@@ -30,9 +30,17 @@ const generateFieldSquareKey = position => `${position.x},${position.y}`;
 
 const splitFieldSquareKeyIntoPosition = compose(zipObj(['x', 'y']), split(','));
 
+const Heading = {
+	North: -0.5 * Math.PI,
+	South: 0.5 * Math.PI,
+	West: Math.PI,
+	East: 0,
+};
+
 module.exports = {
 	printFieldSquare,
 	generateFieldSquareKey,
 	splitFieldSquareKeyIntoPosition,
 	isPositionAtRear,
+	Heading,
 };

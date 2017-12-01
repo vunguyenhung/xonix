@@ -14,11 +14,12 @@ const ChangeableColor = state => ({
 // each function of Movable will return a new state
 const Movable = state => ({
 	// TODO: determine monsterBall's heading possibility. (it can only move 8 directions)
+	// 0.5 * Math.PI - south | 0 - east | -0.5 * Math.PI - north | Math.PI - west
 	move: () => {
-		const deltaX = Math.cos(90 - state.heading) * state.speed;
-		const deltaY = Math.sin(90 - state.heading) * state.speed;
-		const newPos = { x: state.position.x + deltaX, y: state.position.y + deltaY };
-		return { ...state, newPos };
+		const deltaX = Math.floor(Math.cos(state.heading) * state.speed);
+		const deltaY = Math.floor(Math.sin(state.heading) * state.speed);
+		const position = { x: state.position.x + deltaX, y: state.position.y + deltaY };
+		return { ...state, position };
 	},
 });
 
@@ -42,10 +43,10 @@ const Steerable = state => ({
 });
 
 const GameBehaviors = state => ({
-	// TODO: return Result here, game will end if lives = 0
+	// TODO: game will end if lives = 0
 	decreaseLife: () => ({ ...state, lives: state.lives - 1 }),
 	// decreaseLife will be called in redux-logic because it need validation before calling action
-
+	decreaseClock: () => ({ ...state, clock: state.clock - 1 }),
 	addTime: time => ({ ...state, time: state.time + time }),
 	// TODO: change more constant here. Implement 1 level first
 	// increaseLevel: () => ({ ...state, level: state.level + 1 }),

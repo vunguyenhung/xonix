@@ -10,8 +10,11 @@ const { mapObjIndexed, last, forEachObjIndexed } = require('ramda');
 Project file imports
  */
 const Instances = require('./instances');
-const { generateFieldSquareKey, splitFieldSquareKeyIntoPosition, isPositionAtRear } = require(
-	'./utils');
+const {
+	generateFieldSquareKey,
+	splitFieldSquareKeyIntoPosition,
+	isPositionAtRear,
+} = require('./utils');
 
 // steps:
 // - add 2 new action: DO_SOMETHING, SOMETHING_DONE
@@ -90,14 +93,28 @@ const TimeTicketAddedAction = state => ({
 	payload: state,
 });
 
-const UpdateFieldSquare = (position, color) => ({
+const UpdateFieldSquareAction = (position, color) => ({
 	type: 'UPDATE_FIELD_SQUARE',
 	payload: { position, color },
 });
 
-const FieldSquareUpdated = state => ({
+const FieldSquareUpdatedAction = state => ({
 	type: 'FIELD_SQUARE_UPDATED',
 	payload: state,
+});
+
+const TickGameClockAction = () => ({
+	type: 'TICK_GAME_CLOCK',
+});
+
+const GameClockTickedAction = state => ({
+	type: 'GAME_CLOCK_TICKED',
+	payload: state,
+});
+
+const TickGameClockFailedAction = reason => ({
+	type: 'TICK_GAME_CLOCK_FAILED',
+	payload: reason,
 });
 
 const mapFieldSquaresInstancesToStates = fieldSquaresInstances =>
@@ -164,7 +181,7 @@ const updateFieldSquareLogic = createLogic({
 
 		const updatedFieldSquaresStates =
 			mapFieldSquaresInstancesToStates(Instances.getState().fieldSquares);
-		dispatch(FieldSquareUpdated(updatedFieldSquaresStates));
+		dispatch(FieldSquareUpdatedAction(updatedFieldSquaresStates));
 
 		done();
 	},
@@ -177,13 +194,13 @@ const initiateFieldSquaresLogic = createLogic({
 		forEachObjIndexed((fs, key) => {
 			const fsPosition = splitFieldSquareKeyIntoPosition(key);
 			if (isPositionAtRear(fsPosition)) {
-				dispatch(UpdateFieldSquare(fsPosition, '.'));
+				dispatch(UpdateFieldSquareAction(fsPosition, '.'));
 			}
 		})(Instances.getState().fieldSquares);
 
 		// set car color
 		const carState = getState().car;
-		dispatch(UpdateFieldSquare(carState.position, carState.color));
+		dispatch(UpdateFieldSquareAction(carState.position, carState.color));
 
 		dispatch(FieldSquaresInitiatedAction());
 		done();
@@ -201,7 +218,7 @@ const addMonsterBallLogic = createLogic({
 			.map(mbInstance => mbInstance.getState())));
 
 		const latestMonsterBall = last(Instances.getState().monsterBalls).getState();
-		dispatch(UpdateFieldSquare(latestMonsterBall.position, latestMonsterBall.color));
+		dispatch(UpdateFieldSquareAction(latestMonsterBall.position, latestMonsterBall.color));
 
 		done();
 	},
@@ -218,7 +235,36 @@ const addTimeTicketLogic = createLogic({
 			.map(ttInstance => ttInstance.getState())));
 
 		const latestTimeTicket = last(Instances.getState().timeTickets).getState();
-		dispatch(UpdateFieldSquare(latestTimeTicket.position, latestTimeTicket.color));
+		dispatch(UpdateFieldSquareAction(latestTimeTicket.position, latestTimeTicket.color));
+
+		done();
+	},
+});
+
+const tickGameClockLogic = createLogic({
+	type: 'TICK_GAME_CLOCK',
+	validate({ getState, action }, allow, reject) {
+		// TODO: validate if car is moving to the border
+		if (getState().game.clock === 0) { // TODO: clock == 0 ? game lost a live
+			reject(TickGameClockFailedAction('Time is already 0'));
+		} else allow(action);
+	},
+	process(_, dispatch, done) {
+		// move car
+		const carWithNewPosition = Instances.getState().car.move();
+		Instances.getState().car.setState(carWithNewPosition);
+
+		// minus the clock
+		const gameWithNewClock = Instances.getState().game.decreaseClock();
+		Instances.getState().game.setState(gameWithNewClock);
+
+		// update car trail on fieldSquares
+		// 	[{}]
+
+		dispatch(GameClockTickedAction({
+			car: carWithNewPosition,
+			game: gameWithNewClock,
+		}));
 
 		done();
 	},
@@ -242,6 +288,8 @@ const reducer = (state = initialState, { type, payload }) => {
 			return { ...state, timeTickets: payload };
 		case 'FIELD_SQUARE_UPDATED':
 			return { ...state, fieldSquares: payload };
+		case 'GAME_CLOCK_TICKED':
+			return { ...state, car: payload.car, game: payload.game };
 		default:
 			return state;
 	}
@@ -256,6 +304,7 @@ const logics = [
 	addTimeTicketLogic,
 	updateFieldSquareLogic,
 	initiateFieldSquaresLogic,
+	tickGameClockLogic,
 ];
 
 const logicMiddleware = createLogicMiddleware(logics);
@@ -273,4 +322,5 @@ module.exports = {
 	AddMonsterBallAction,
 	AddTimeTicketAction,
 	InitiateFieldSquaresAction,
+	TickGameClockAction,
 };
