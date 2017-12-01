@@ -137,15 +137,20 @@ const RestartGameAction = () => ({
 	type: 'RESTART_GAME',
 });
 
-// const MoveMonsterBallAction = index => ({
-// 	type: 'MOVE_MONSTER_BALL',
-// 	payload: index,
-// });
-//
-// const MonsterBallMovedAction = state => ({
-// 	type: 'MONSTER_BALL_ADDED',
-// 	payload: state,
-// });
+const MoveMonsterBallAction = monsterBall => ({
+	type: 'MOVE_MONSTER_BALL',
+	payload: monsterBall,
+});
+
+const MonsterBallMovedAction = state => ({
+	type: 'MONSTER_BALL_MOVED',
+	payload: state,
+});
+
+const MoveMonsterBallFailedAction = reason => ({
+	type: 'MOVE_MONSTER_BALL',
+	payload: reason,
+});
 
 const mapFieldSquaresInstancesToStates = fieldSquaresInstances =>
 	mapObjIndexed(val => val.getState())(fieldSquaresInstances);
@@ -202,8 +207,6 @@ const decreaseCarSpeedLogic = createLogic({
 const updateFieldSquareLogic = createLogic({
 	type: 'UPDATE_FIELD_SQUARE',
 	// TODO: detect if the new updated field square create a closed zone of `|`
-	// => create FillOwnedZone
-	// 	=> update score
 	process({ action }, dispatch, done) {
 		const updatedState =
 			// { position, color }
@@ -313,6 +316,29 @@ const decreaseGameLivesLogic = createLogic({
 	},
 });
 
+const moveMonsterBallLogic = createLogic({
+	type: 'MOVE_MONSTER_BALL',
+	validate({ getState, action }, allow, reject) {
+		const { position } = action.payload.move();
+		if (!getState().fieldSquares[generateFieldSquareKey(position)]) {
+			reject(MoveMonsterBallFailedAction('Monster Ball have no where else to move'));
+		} else allow(action);
+	},
+	process({ action }, dispatch, done) {
+		const toBeMovedMonsterBall = action.payload;
+		const previousState = clone(toBeMovedMonsterBall.getState());
+
+		const newMonsterBallState = toBeMovedMonsterBall.move();
+		toBeMovedMonsterBall.setState(newMonsterBallState);
+
+		dispatch(UpdateFieldSquareAction(newMonsterBallState.position, newMonsterBallState.color));
+		dispatch(UpdateFieldSquareAction(previousState.position, '-'));
+
+		dispatch(MonsterBallMovedAction(newMonsterBallState));
+		done();
+	},
+});
+
 const tickGameClockLogic = createLogic({
 	type: 'TICK_GAME_CLOCK',
 	validate({ getState, action }, allow, reject) {
@@ -323,14 +349,8 @@ const tickGameClockLogic = createLogic({
 	},
 	process({ getState }, dispatch, done) {
 		// move monsterBall
-		const newMonsterBallStates =
-			Instances.getState().monsterBalls.map(mb => mb.move());
-		Instances.getState().monsterBalls.forEach((mb, index) => {
-			// update previous monsterBall position to -
-			dispatch(UpdateFieldSquareAction(mb.getState().position, '-'));
-			const newState = mb.setState(newMonsterBallStates[index]);
-			// update monsterBall positions
-			dispatch(UpdateFieldSquareAction(newState.position, newState.color));
+		Instances.getState().monsterBalls.forEach((mb) => {
+			dispatch(MoveMonsterBallAction(mb));
 		});
 
 		// move car
@@ -397,6 +417,11 @@ const reducer = (state = initialState, { type, payload }) => {
 		case 'CAR_SPEED_DECREASED':
 		case 'CAR_STEERED':
 			return { ...state, car: payload };
+		case 'MONSTER_BALL_MOVED':
+			return {
+				...state,
+				monsterBalls: state.monsterBalls.map(mb => (mb.color === payload.color ? payload : mb)),
+			};
 		case 'MONSTER_BALL_ADDED':
 			return { ...state, monsterBalls: payload };
 		case 'TIME_TICKET_ADDED':
@@ -426,6 +451,7 @@ const logics = [
 	restartGameClockLogic,
 	decreaseGameLivesLogic,
 	restartGameLogic,
+	moveMonsterBallLogic,
 ];
 
 const logicMiddleware = createLogicMiddleware(logics);
