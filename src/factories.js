@@ -112,7 +112,7 @@ const TimeTickets = ({ position, color, time }) => {
 
 // instances :: { car, monsterBalls, fieldSquares, timeTickets }
 const Game = ({ lives, clock, level }) => {
-	const state = { lives, clock, level, currentScore: 0, minimumScore: 50 };
+	const state = { lives, clock, level, currentScore: 0, requiredScore: 50 };
 	return {
 		...Behaviors.GameBehaviors(state),
 		...Behaviors.MutableState(state),

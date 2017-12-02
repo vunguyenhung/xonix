@@ -7,6 +7,7 @@ const { createLogicMiddleware, createLogic } = require('redux-logic');
 const {
 	mapObjIndexed, last, forEachObjIndexed, clone,
 } = require('ramda');
+const fieldSquareSize = require('config').get('fieldSquares.size');
 
 /*
 Project file imports
@@ -171,12 +172,19 @@ const OwnFieldSquaresAction = ({ topLeft, topRight, bottomLeft }) => ({
 	payload: { topLeft, topRight, bottomLeft },
 });
 
+// TODO: add update currentScore action
+// TODO: increaseLevel action
+// 	reinitialize
+//	add monster ball based on current level
+//	increase minimumScore
+
 const mapFieldSquaresInstancesToStates = fieldSquaresInstances =>
 	mapObjIndexed(val => val.getState())(fieldSquaresInstances);
 
 const initStatesLogic = createLogic({
 	type: 'INITIATE_STATES',
 	process(_, dispatch, done) {
+		// console.log('Inside initiate states');
 		const states = {
 			fieldSquares: mapFieldSquaresInstancesToStates(Instances.getState().fieldSquares),
 			car: Instances.getState().car.getState(),
@@ -251,12 +259,14 @@ const initiateFieldSquaresLogic = createLogic({
 			const fsPosition = splitFieldSquareKeyIntoPosition(key);
 			if (isPositionAtRear(fsPosition)) {
 				dispatch(UpdateFieldSquareAction(fsPosition, '.'));
+			} else {
+				dispatch(UpdateFieldSquareAction(fsPosition, '-'));
 			}
 		})(Instances.getState().fieldSquares);
 
 		// set car color
 		const carState = getState().car;
-		console.log('carState', getState().car); // undefined
+		// console.log('carState', getState().car); // undefined
 		dispatch(UpdateFieldSquareAction(carState.position, carState.color));
 
 		dispatch(FieldSquaresInitiatedAction());
@@ -439,7 +449,7 @@ const tickGameClockLogic = createLogic({
 
 const ownFieldSquaresLogic = createLogic({
 	type: 'OWN_FIELD_SQUARES',
-	process({ action }, dispatch, done) {
+	process({ getState, action }, dispatch, done) {
 		const { topLeft, topRight, bottomLeft } = action.payload;
 
 		for (let { y } = topLeft; y < bottomLeft.y; y += 1) {
@@ -448,7 +458,52 @@ const ownFieldSquaresLogic = createLogic({
 			}
 		}
 
-		// TODO: calculate game score
+		// calculate game score based on current field squares state
+		const { fieldSquares } = getState(); // { '0,1': {} }
+		// total squares: fieldSquaresSize.x * fieldSquaresSize.y
+		const totalSquares = fieldSquareSize.x * fieldSquareSize.y;
+		let ownedSquares = 0;
+		forEachObjIndexed((fs) => {
+			if (fs.color === '.') {
+				ownedSquares += 1;
+			}
+		})(fieldSquares);
+		const currentScore = (ownedSquares * 100) / totalSquares;
+
+		// update current score in game state
+		const gameInstance = Instances.getState().game;
+		const newGameStateWithNewCurrentScore = gameInstance.setCurrentScore(currentScore);
+		gameInstance.setState(newGameStateWithNewCurrentScore);
+
+		// console.log('newGameStateWithNewCurrentScore: ', newGameStateWithNewCurrentScore);
+		// if currentScore >= requiredScore => next level
+		if (newGameStateWithNewCurrentScore.currentScore >=
+			newGameStateWithNewCurrentScore.requiredScore) {
+			// reinitialize states
+			dispatch(InitiateStatesAction());
+
+			// increase level
+			const newGameInstanceAfterRestartGame = Instances.getState().game;
+			const newGameStateWithNewLevel = newGameInstanceAfterRestartGame.increaseLevel();
+			newGameInstanceAfterRestartGame.setState(newGameStateWithNewLevel);
+
+			// add monsterBall based on level
+			dispatch(AddMonsterBallAction());
+
+			// increase requiredScore based on current level
+			const newGameStateWithNewRequiredScore =
+				newGameInstanceAfterRestartGame.updateRequiredScore();
+			newGameInstanceAfterRestartGame.setState(newGameStateWithNewRequiredScore);
+
+			// update clock based on level: the clock goes down by 2 for each level
+			const newGameStateWithNewClock =
+				newGameInstanceAfterRestartGame.updateClock();
+			newGameInstanceAfterRestartGame.setState(newGameStateWithNewClock);
+		}
+
+		// console.log('totalSquares: ', totalSquares);
+		// console.log('ownedSquares: ', ownedSquares);
+		// console.log('currentScore: ', currentScore);
 
 		done();
 	},

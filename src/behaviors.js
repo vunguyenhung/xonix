@@ -46,12 +46,20 @@ const Steerable = state => ({
 
 const GameBehaviors = state => ({
 	decreaseLives: () => ({ ...state, lives: state.lives - 1 }),
-	// decreaseLife will be called in redux-logic because it need validation before calling action
 	decreaseClock: () => ({ ...state, clock: state.clock - 1 }),
 	restartClock: () => ({ ...state, clock: gameConfig.clock }),
 	addTime: time => ({ ...state, time: state.time + time }),
+	setCurrentScore: currentScore => ({ ...state, currentScore }),
 	// TODO: change more constant here. Implement 1 level first
-	// increaseLevel: () => ({ ...state, level: state.level + 1 }),
+	increaseLevel: () => ({ ...state, level: state.level + 1 }),
+	updateRequiredScore: () => ({
+		...state,
+		requiredScore: 50 + ((state.level - 1) * 10),
+	}),
+	updateClock: () => ({
+		...state,
+		clock: gameConfig.clock - (2 * (state.level - 1)),
+	}),
 });
 
 module.exports = {
