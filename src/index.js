@@ -16,7 +16,6 @@ const {
 	DecreaseCarSpeedAction,
 	AddMonsterBallAction,
 	AddTimeTicketAction,
-	InitiateFieldSquaresAction,
 	TickGameClockAction,
 } = require('./store');
 const Instances = require('./instances');
