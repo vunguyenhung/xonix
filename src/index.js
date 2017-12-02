@@ -8,20 +8,10 @@ const { prop } = require('ramda');
 /*
 Project file imports
  */
-const {
-	store,
-	InitiateStatesAction,
-	SteerCarAction,
-	IncreaseCarSpeedAction,
-	DecreaseCarSpeedAction,
-	AddMonsterBallAction,
-	AddTimeTicketAction,
-	TickGameClockAction,
-	OwnFieldSquaresAction,
-	RestartGameAction,
-} = require('./store');
+const { store } = require('./store');
 const Instances = require('./instances');
 const Utils = require('./utils');
+const Actions = require('./actions');
 
 const showCommands = () => {
 	console.log('Xonix available commands:');
@@ -53,7 +43,7 @@ const play = () => {
 		prompt: 'Xonix> ',
 	});
 	console.log('>>Initiating World States...');
-	store.dispatch(InitiateStatesAction());
+	store.dispatch(Actions.InitiateStatesAction());
 	console.log('>>World States initiated, use `m` command to show World States');
 	console.log('-------------------------');
 
@@ -69,62 +59,62 @@ const play = () => {
 				console.log('Steer Car to North');
 				console.log('-------------------------');
 				console.log('WorldStates.car: ');
-				store.dispatch(SteerCarAction(-0.5 * Math.PI));
+				store.dispatch(Actions.SteerCarAction(-0.5 * Math.PI));
 				console.log(prop('car')(store.getState()));
 				break;
 			case 's':
 				console.log('Steer Car to South');
 				console.log('-------------------------');
 				console.log('WorldStates.car: ');
-				store.dispatch(SteerCarAction(0.5 * Math.PI));
+				store.dispatch(Actions.SteerCarAction(0.5 * Math.PI));
 				console.log(prop('car')(store.getState()));
 				break;
 			case 'e':
 				console.log('Steer Car to East');
 				console.log('-------------------------');
 				console.log('WorldStates.car: ');
-				store.dispatch(SteerCarAction(0));
+				store.dispatch(Actions.SteerCarAction(0));
 				console.log(prop('car')(store.getState()));
 				break;
 			case 'w':
 				console.log('Steer Car to West');
 				console.log('-------------------------');
 				console.log('WorldStates.car: ');
-				store.dispatch(SteerCarAction(Math.PI));
+				store.dispatch(Actions.SteerCarAction(Math.PI));
 				console.log(prop('car')(store.getState()));
 				break;
 			case 'i':
 				console.log('Increase Car speed by one unit');
 				console.log('-------------------------');
 				console.log('WorldStates.car: ');
-				store.dispatch(IncreaseCarSpeedAction());
+				store.dispatch(Actions.IncreaseCarSpeedAction());
 				console.log(prop('car')(store.getState()));
 				break;
 			case 'l':
 				console.log('Decrease Car speed by one unit');
 				console.log('-------------------------');
 				console.log('WorldStates.car: ');
-				store.dispatch(DecreaseCarSpeedAction());
+				store.dispatch(Actions.DecreaseCarSpeedAction());
 				console.log(prop('car')(store.getState()));
 				break;
 			case 'b':
 				console.log('Add new Monster Ball to the world');
 				console.log('-------------------------');
 				console.log('WorldStates.monsterBalls: ');
-				store.dispatch(AddMonsterBallAction());
+				store.dispatch(Actions.AddMonsterBallAction());
 				console.log(prop('monsterBalls')(store.getState()));
 				break;
 			case 'k':
 				console.log('Add new Time Ticket to the world');
 				console.log('-------------------------');
 				console.log('WorldStates.timeTickets: ');
-				store.dispatch(AddTimeTicketAction());
+				store.dispatch(Actions.AddTimeTicketAction());
 				console.log(prop('timeTickets')(store.getState()));
 				break;
 			case 't':
 				console.log('Tick the game clock');
 				console.log('-------------------------');
-				store.dispatch(TickGameClockAction());
+				store.dispatch(Actions.TickGameClockAction());
 				console.log('WorldStates.game: ');
 				console.log(prop('game')(store.getState()));
 				console.log('-------------------------');
@@ -144,7 +134,7 @@ const play = () => {
 				console.log('Generate random owned zone');
 				console.log('-------------------------');
 				const randomZone = Utils.randomZone();
-				store.dispatch(OwnFieldSquaresAction(randomZone));
+				store.dispatch(Actions.OwnFieldSquaresAction(randomZone));
 				console.log('Owned zone positions: ', randomZone);
 				break;
 			case 'is':
@@ -160,7 +150,7 @@ const play = () => {
 			case 'rs':
 				console.log('Restart Game world');
 				console.log('-------------------------');
-				store.dispatch(RestartGameAction());
+				store.dispatch(Actions.RestartGameAction());
 				break;
 			case 'cmd':
 				showCommands();
