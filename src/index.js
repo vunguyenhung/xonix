@@ -1,4 +1,4 @@
-/* eslint-disable indent,no-console */
+/* eslint-disable indent,no-console,no-case-declarations */
 /*
 3rd Party library imports
  */
@@ -17,6 +17,7 @@ const {
 	AddMonsterBallAction,
 	AddTimeTicketAction,
 	TickGameClockAction,
+	OwnFieldSquaresAction,
 } = require('./store');
 const Instances = require('./instances');
 const Utils = require('./utils');
@@ -34,6 +35,7 @@ const showCommands = () => {
 	console.log('k: Add new Time Ticket to the world');
 	console.log('t: Tick the game clock');
 	console.log('d: Show Game States');
+	console.log('g: Generate random owned zone');
 	console.log('is: Show Instances States');
 	console.log('fs: Show Field Square Map');
 	console.log('cmd: Show available commands');
@@ -135,6 +137,13 @@ const play = () => {
 				console.log('-------------------------');
 				console.log('WorldStates.game: ');
 				console.log(prop('game')(store.getState()));
+				break;
+			case 'g':
+				console.log('Generate random owned zone');
+				console.log('-------------------------');
+				const randomZone = Utils.randomZone();
+				store.dispatch(OwnFieldSquaresAction(randomZone));
+				console.log('Owned zone positions: ', randomZone);
 				break;
 			case 'is':
 				console.log('Show Instances State');

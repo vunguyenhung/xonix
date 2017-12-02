@@ -166,6 +166,11 @@ const MoveCarFailedAction = reason => ({
 	payload: reason,
 });
 
+const OwnFieldSquaresAction = ({ topLeft, topRight, bottomLeft }) => ({
+	type: 'OWN_FIELD_SQUARES',
+	payload: { topLeft, topRight, bottomLeft },
+});
+
 const mapFieldSquaresInstancesToStates = fieldSquaresInstances =>
 	mapObjIndexed(val => val.getState())(fieldSquaresInstances);
 
@@ -432,6 +437,23 @@ const tickGameClockLogic = createLogic({
 	},
 });
 
+const ownFieldSquaresLogic = createLogic({
+	type: 'OWN_FIELD_SQUARES',
+	process({ action }, dispatch, done) {
+		const { topLeft, topRight, bottomLeft } = action.payload;
+
+		for (let { y } = topLeft; y < bottomLeft.y; y += 1) {
+			for (let { x } = topLeft; x < topRight.x; x += 1) {
+				dispatch(UpdateFieldSquareAction({ x, y }, '.'));
+			}
+		}
+
+		// TODO: calculate game score
+
+		done();
+	},
+});
+
 const initialState = {
 	monsterBalls: [],
 };
@@ -480,6 +502,7 @@ const logics = [
 	restartGameLogic,
 	moveMonsterBallLogic,
 	moveCarLogic,
+	ownFieldSquaresLogic,
 ];
 
 const logicMiddleware = createLogicMiddleware(logics);
@@ -496,6 +519,6 @@ module.exports = {
 	DecreaseCarSpeedAction,
 	AddMonsterBallAction,
 	AddTimeTicketAction,
-	InitiateFieldSquaresAction,
 	TickGameClockAction,
+	OwnFieldSquaresAction,
 };
