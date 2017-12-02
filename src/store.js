@@ -415,6 +415,8 @@ const moveCarLogic = createLogic({
 			dispatch(UpdateFieldSquareAction(pos, '|'));
 		});
 
+		// TODO: own the square if the car touch the owned square
+
 		dispatch(CarMovedAction(currentCarState));
 		done();
 	},
@@ -489,7 +491,6 @@ const ownFieldSquaresLogic = createLogic({
 
 			// add monsterBall based on level
 			dispatch(AddMonsterBallAction());
-
 			// increase requiredScore based on current level
 			const newGameStateWithNewRequiredScore =
 				newGameInstanceAfterRestartGame.updateRequiredScore();
@@ -576,4 +577,5 @@ module.exports = {
 	AddTimeTicketAction,
 	TickGameClockAction,
 	OwnFieldSquaresAction,
+	RestartGameAction,
 };

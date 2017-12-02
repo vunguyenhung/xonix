@@ -18,6 +18,7 @@ const {
 	AddTimeTicketAction,
 	TickGameClockAction,
 	OwnFieldSquaresAction,
+	RestartGameAction,
 } = require('./store');
 const Instances = require('./instances');
 const Utils = require('./utils');
@@ -38,6 +39,7 @@ const showCommands = () => {
 	console.log('g: Generate random owned zone');
 	console.log('is: Show Instances States');
 	console.log('fs: Show Field Square Map');
+	console.log('rs: Restart Game world');
 	console.log('cmd: Show available commands');
 	console.log('m: Show World States');
 	console.log('q: Quit the game');
@@ -154,6 +156,11 @@ const play = () => {
 				console.log('Show Field Square Map');
 				console.log('-------------------------');
 				Utils.printFieldSquare(store.getState().fieldSquares);
+				break;
+			case 'rs':
+				console.log('Restart Game world');
+				console.log('-------------------------');
+				store.dispatch(RestartGameAction());
 				break;
 			case 'cmd':
 				showCommands();
