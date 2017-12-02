@@ -414,13 +414,13 @@ const tickGameClockLogic = createLogic({
 		// TODO: validate if car is moving to the border
 	},
 	process(_, dispatch, done) {
+		// move car
+		dispatch(MoveCarAction());
+
 		// move monsterBall
 		Instances.getState().monsterBalls.forEach((mb) => {
 			dispatch(MoveMonsterBallAction(mb));
 		});
-
-		// move car
-		dispatch(MoveCarAction());
 
 		// minus the clock
 		const gameWithNewClock = Instances.getState().game.decreaseClock();

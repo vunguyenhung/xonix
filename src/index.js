@@ -127,6 +127,9 @@ const play = () => {
 				console.log('-------------------------');
 				console.log('WorldStates.car: ');
 				console.log(prop('car')(store.getState()));
+				console.log('-------------------------');
+				console.log('WorldStates.monsterBalls: ');
+				console.log(prop('monsterBalls')(store.getState()));
 				break;
 			case 'd':
 				console.log('Show World States');
