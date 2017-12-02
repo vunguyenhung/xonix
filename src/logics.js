@@ -221,13 +221,8 @@ const moveCarLogic = createLogic({
 	},
 	process({ getState }, dispatch, done) {
 		const previousCarState = clone(getState().car);
-		// console.log('previousCarState1', previousCarState);
 		const currentCarState = Instances.getState().car.move();
-		// console.log('currentCarState', currentCarState);
 		Instances.getState().car.setState(currentCarState);
-
-		// update car position on fieldSquares
-		dispatch(Actions.UpdateFieldSquareAction(currentCarState.position, 'o'));
 
 		// update car trail on fieldSquares
 		const { heading, position } = currentCarState;
@@ -259,6 +254,19 @@ const moveCarLogic = createLogic({
 		});
 
 		// TODO: own the square if the car touch the owned square
+
+		// TODO: update fieldSquare of trail if current car position is owned
+		const { fieldSquares } = getState();
+		if (fieldSquares[generateFieldSquareKey(currentCarState.position)].color === '.') {
+			forEachObjIndexed((fs) => {
+				if (fs.color === '|') {
+					dispatch(Actions.UpdateFieldSquareAction(fs.position, '.'));
+				}
+			})(fieldSquares);
+		}
+
+		// update car position on fieldSquares
+		dispatch(Actions.UpdateFieldSquareAction(currentCarState.position, 'o'));
 
 		dispatch(Actions.CarMovedAction(currentCarState));
 		done();
