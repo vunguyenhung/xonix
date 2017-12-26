@@ -44,7 +44,7 @@ const createTimeTicket = () =>
 			y: randomInt(0, configs.fieldSquares.size.y),
 		},
 		color: randomColor(),
-		time: randomInt(1, 6), // TODO: init this coresponse to level. Ex: level 1: 5, level 2: 4
+		time: randomInt(1, 6),
 	});
 
 const InstancesBehaviors = state => ({
