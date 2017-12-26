@@ -3,7 +3,7 @@
 3rd Party library imports
  */
 const {
-	mapObjIndexed, last, forEachObjIndexed, clone,
+	last, forEachObjIndexed, clone,
 } = require('ramda');
 const { createLogicMiddleware, createLogic } = require('redux-logic');
 const fieldSquareSize = require('config').get('fieldSquares.size');
@@ -17,16 +17,13 @@ const {
 	splitFieldSquareKeyIntoPosition,
 	isPositionAtRear,
 	Heading,
+	mapFieldSquaresInstancesToStates,
 } = require('./utils');
 const Actions = require('./actions');
-
-const mapFieldSquaresInstancesToStates = fieldSquaresInstances =>
-	mapObjIndexed(val => val.getState())(fieldSquaresInstances);
 
 const initStatesLogic = createLogic({
 	type: Actions.ActionTypes.INITIATE_STATES,
 	process(_, dispatch, done) {
-		// console.log('Inside initiate states');
 		const states = {
 			fieldSquares: mapFieldSquaresInstancesToStates(Instances.getState().fieldSquares),
 			car: Instances.getState().car.getState(),
@@ -96,7 +93,6 @@ const updateFieldSquareLogic = createLogic({
 const initiateFieldSquaresLogic = createLogic({
 	type: Actions.ActionTypes.INITIATE_FIELD_SQUARES,
 	process({ getState }, dispatch, done) {
-		// set default owned squares
 		forEachObjIndexed((fs, key) => {
 			const fsPosition = splitFieldSquareKeyIntoPosition(key);
 			if (isPositionAtRear(fsPosition)) {
@@ -106,9 +102,7 @@ const initiateFieldSquaresLogic = createLogic({
 			}
 		})(Instances.getState().fieldSquares);
 
-		// set car color
 		const carState = getState().car;
-		// console.log('carState', getState().car); // undefined
 		dispatch(Actions.UpdateFieldSquareAction(carState.position, carState.color));
 
 		dispatch(Actions.FieldSquaresInitiatedAction());
@@ -248,14 +242,10 @@ const moveCarLogic = createLogic({
 				positionsToUpdate.push({ x, y: position.y });
 			}
 		}
-		// console.log('positionsToUpdate: ', positionsToUpdate);
 		positionsToUpdate.forEach((pos) => {
 			dispatch(Actions.UpdateFieldSquareAction(pos, '|'));
 		});
 
-		// TODO: own the square if the car touch the owned square
-
-		// TODO: update fieldSquare of trail if current car position is owned
 		const { fieldSquares } = getState();
 		if (fieldSquares[generateFieldSquareKey(currentCarState.position)].color === '.') {
 			forEachObjIndexed((fs) => {
@@ -328,7 +318,6 @@ const ownFieldSquaresLogic = createLogic({
 		const newGameStateWithNewCurrentScore = gameInstance.setCurrentScore(currentScore);
 		gameInstance.setState(newGameStateWithNewCurrentScore);
 
-		// console.log('newGameStateWithNewCurrentScore: ', newGameStateWithNewCurrentScore);
 		// if currentScore >= requiredScore => next level
 		if (newGameStateWithNewCurrentScore.currentScore >=
 			newGameStateWithNewCurrentScore.requiredScore) {

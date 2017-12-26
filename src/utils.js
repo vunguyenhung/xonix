@@ -3,7 +3,7 @@
  */
 const fieldSquareSize = require('config').get('fieldSquares.size');
 const {
-	split, zipObj, compose, keys,
+	split, zipObj, compose, keys, mapObjIndexed,
 } = require('ramda');
 
 /*
@@ -62,11 +62,15 @@ const randomZone = () => {
 	return { topLeft, topRight, bottomLeft };
 };
 
+const mapFieldSquaresInstancesToStates = fieldSquaresInstances =>
+	mapObjIndexed(val => val.getState())(fieldSquaresInstances);
+
 module.exports = {
 	printFieldSquare,
 	generateFieldSquareKey,
 	splitFieldSquareKeyIntoPosition,
 	isPositionAtRear,
+	mapFieldSquaresInstancesToStates,
 	Heading,
 	randomInt,
 	randomColor,
