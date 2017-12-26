@@ -143,7 +143,6 @@ const showCommands = () => {
 	console.log('cmd: Show available commands');
 	console.log('m: Show World States');
 	console.log('q: Quit the game');
-	console.log('hello: Print `world`');
 };
 
 const showWorldStates = () => {
