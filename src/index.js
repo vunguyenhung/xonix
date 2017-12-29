@@ -7,9 +7,7 @@ const readline = require('readline');
 /*
 Project file imports
  */
-const { store } = require('./store');
-const Actions = require('./actions');
-const { processCommand, showCommands } = require('./commands');
+const { processCommand, showCommands, initiateWorldStates } = require('./commands');
 
 const play = () => {
 	const rl = readline.createInterface({
@@ -17,12 +15,8 @@ const play = () => {
 		output: process.stdout,
 		prompt: 'Xonix> ',
 	});
-	console.log('>>Initiating World States...');
-	store.dispatch(Actions.InitiateStatesAction());
-	console.log('>>World States initiated, use `m` command to show World States');
-	console.log('-------------------------');
+	initiateWorldStates();
 	showCommands();
-	console.log('-------------------------');
 	rl.prompt();
 	rl.on('line', (line) => {
 		processCommand(line.trim());

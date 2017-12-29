@@ -12,6 +12,12 @@ const Instances = require('./instances');
 const Utils = require('./utils');
 const Actions = require('./actions');
 
+const initiateWorldStates = () => {
+	console.log('>>Initiating World States...');
+	store.dispatch(Actions.InitiateStatesAction());
+	console.log('>>World States initiated, use `m` command to show World States');
+};
+
 const steerCarToNorthCommand = () => {
 	console.log('Steer Car to North');
 	console.log('-------------------------');
@@ -124,6 +130,7 @@ const restartGameWorld = () => {
 };
 
 const showCommands = () => {
+	console.log('-------------------------');
 	console.log('Xonix available commands:');
 	console.log('-------------------------');
 	console.log('n: Steer the car to the North');
@@ -142,7 +149,8 @@ const showCommands = () => {
 	console.log('rs: Restart Game world');
 	console.log('cmd: Show available commands');
 	console.log('m: Show World States');
-	console.log('q: Quit the game');
+	console.log('q: Quit');
+	console.log('-------------------------');
 };
 
 const showWorldStates = () => {
@@ -187,4 +195,5 @@ const processCommand = command =>
 module.exports = {
 	processCommand,
 	showCommands,
+	initiateWorldStates,
 };
