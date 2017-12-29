@@ -3,6 +3,8 @@
 3rd Party library imports
  */
 const { createStore, applyMiddleware } = require('redux');
+const { omit } = require('ramda');
+
 
 /*
 Project file imports
@@ -47,6 +49,13 @@ const reducer = (state = initialState, { type, payload }) => {
 const middleware = applyMiddleware(logicMiddleware);
 
 const store = createStore(reducer, middleware);
+
+store.subscribe(() => {
+	console.log('-------------------------');
+	console.log('State changes: ');
+	console.log(omit(['fieldSquares'])(store.getState()));
+	console.log('-------------------------');
+});
 
 module.exports = {
 	store,

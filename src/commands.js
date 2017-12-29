@@ -21,64 +21,64 @@ const initiateWorldStates = () => {
 const steerCarToNorth = () => {
 	console.log('Steer Car to North');
 	console.log('-------------------------');
-	console.log('WorldStates.car: ');
 	store.dispatch(Actions.SteerCarAction(-0.5 * Math.PI));
+	console.log('WorldStates.car: ');
 	console.log(prop('car')(store.getState()));
 };
 
 const steerCarToSouth = () => {
 	console.log('Steer Car to South');
 	console.log('-------------------------');
-	console.log('WorldStates.car: ');
 	store.dispatch(Actions.SteerCarAction(0.5 * Math.PI));
+	console.log('WorldStates.car: ');
 	console.log(prop('car')(store.getState()));
 };
 
 const steerCarToEast = () => {
 	console.log('Steer Car to East');
 	console.log('-------------------------');
-	console.log('WorldStates.car: ');
 	store.dispatch(Actions.SteerCarAction(0));
+	console.log('WorldStates.car: ');
 	console.log(prop('car')(store.getState()));
 };
 
 const steerCarToWest = () => {
 	console.log('Steer Car to West');
 	console.log('-------------------------');
-	console.log('WorldStates.car: ');
 	store.dispatch(Actions.SteerCarAction(Math.PI));
+	console.log('WorldStates.car: ');
 	console.log(prop('car')(store.getState()));
 };
 
 const increaseCarSpeed = () => {
 	console.log('Increase Car speed by one unit');
 	console.log('-------------------------');
-	console.log('WorldStates.car: ');
 	store.dispatch(Actions.IncreaseCarSpeedAction());
+	console.log('WorldStates.car: ');
 	console.log(prop('car')(store.getState()));
 };
 
 const decreaseCarSpeed = () => {
 	console.log('Decrease Car speed by one unit');
 	console.log('-------------------------');
-	console.log('WorldStates.car: ');
 	store.dispatch(Actions.DecreaseCarSpeedAction());
+	console.log('WorldStates.car: ');
 	console.log(prop('car')(store.getState()));
 };
 
 const addMonsterBall = () => {
 	console.log('Add new Monster Ball to the world');
 	console.log('-------------------------');
-	console.log('WorldStates.monsterBalls: ');
 	store.dispatch(Actions.AddMonsterBallAction());
+	console.log('WorldStates.monsterBalls: ');
 	console.log(prop('monsterBalls')(store.getState()));
 };
 
 const addTimeTicket = () => {
 	console.log('Add new Time Ticket to the world');
 	console.log('-------------------------');
-	console.log('WorldStates.timeTickets: ');
 	store.dispatch(Actions.AddTimeTicketAction());
+	console.log('WorldStates.timeTickets: ');
 	console.log(prop('timeTickets')(store.getState()));
 };
 
