@@ -18,7 +18,7 @@ const initiateWorldStates = () => {
 	console.log('>>World States initiated, use `m` command to show World States');
 };
 
-const steerCarToNorthCommand = () => {
+const steerCarToNorth = () => {
 	console.log('Steer Car to North');
 	console.log('-------------------------');
 	console.log('WorldStates.car: ');
@@ -170,7 +170,7 @@ const invalidCommand = (command) => {
 };
 
 const COMMAND_MAP = {
-	n: steerCarToNorthCommand,
+	n: steerCarToNorth,
 	s: steerCarToSouth,
 	e: steerCarToEast,
 	w: steerCarToWest,
