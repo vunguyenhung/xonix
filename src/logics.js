@@ -341,7 +341,7 @@ const ownFieldSquaresLogic = createLogic({
 				newGameInstanceAfterRestartGame.updateClock();
 			newGameInstanceAfterRestartGame.setState(newGameStateWithNewClock);
 		}
-
+		dispatch(Actions.FieldSquareOwnedAction(gameInstance.getState()));
 		done();
 	},
 });

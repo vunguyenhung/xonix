@@ -30,149 +30,155 @@ const ActionTypes = {
 	CAR_MOVED: 'CAR_MOVED',
 	MOVE_CAR_FAILED: 'MOVE_CAR_FAILED',
 	OWN_FIELD_SQUARES: 'OWN_FIELD_SQUARES',
+	FIELD_SQUARES_OWNED: 'FIELD_SQUARES_OWNED',
 };
 
 const InitiateStatesAction = () => ({
-	type: 'INITIATE_STATES',
+	type: ActionTypes.INITIATE_STATES,
 });
 
 const StateInitiatedAction = states => ({
-	type: 'STATES_INITIATED',
+	type: ActionTypes.STATES_INITIATED,
 	payload: states,
 });
 
 const InitiateFieldSquaresAction = () => ({
-	type: 'INITIATE_FIELD_SQUARES',
+	type: ActionTypes.INITIATE_FIELD_SQUARES,
 });
 
 const FieldSquaresInitiatedAction = () => ({
-	type: 'FIELD_SQUARES_INITIATED',
+	type: ActionTypes.FIELD_SQUARES_INITIATED,
 });
 
 const SteerCarAction = heading => ({
-	type: 'STEER_CAR',
+	type: ActionTypes.STEER_CAR,
 	payload: heading,
 });
 
 const CarSteeredAction = state => ({
-	type: 'CAR_STEERED',
+	type: ActionTypes.CAR_STEERED,
 	payload: state,
 });
 
 const IncreaseCarSpeedAction = () => ({
-	type: 'INCREASE_CAR_SPEED',
+	type: ActionTypes.INCREASE_CAR_SPEED,
 });
 
 const CarSpeedIncreasedAction = state => ({
-	type: 'CAR_SPEED_INCREASED',
+	type: ActionTypes.CAR_SPEED_INCREASED,
 	payload: state,
 });
 
 const DecreaseCarSpeedAction = () => ({
-	type: 'DECREASE_CAR_SPEED',
+	type: ActionTypes.DECREASE_CAR_SPEED,
 });
 
 const CarSpeedDeceasedAction = state => ({
-	type: 'CAR_SPEED_DECREASED',
+	type: ActionTypes.CAR_SPEED_DECREASED,
 	payload: state,
 });
 
 const DecreaseCarSpeedFailedAction = reason => ({
-	type: 'DECREASE_CAR_SPEED_FAILED',
+	type: ActionTypes.DECREASE_CAR_SPEED_FAILED,
 	payload: reason,
 });
 
 const AddMonsterBallAction = () => ({
-	type: 'ADD_MONSTER_BALL',
+	type: ActionTypes.ADD_MONSTER_BALL,
 });
 
 const MonsterBallAddedAction = state => ({
-	type: 'MONSTER_BALL_ADDED',
+	type: ActionTypes.MONSTER_BALL_ADDED,
 	payload: state,
 });
 
 const AddTimeTicketAction = () => ({
-	type: 'ADD_TIME_TICKET',
+	type: ActionTypes.ADD_TIME_TICKET,
 });
 
 const TimeTicketAddedAction = state => ({
-	type: 'TIME_TICKET_ADDED',
+	type: ActionTypes.TIME_TICKET_ADDED,
 	payload: state,
 });
 
 const UpdateFieldSquareAction = (position, color) => ({
-	type: 'UPDATE_FIELD_SQUARE',
+	type: ActionTypes.UPDATE_FIELD_SQUARE,
 	payload: { position, color },
 });
 
 const FieldSquareUpdatedAction = state => ({
-	type: 'FIELD_SQUARE_UPDATED',
+	type: ActionTypes.FIELD_SQUARE_UPDATED,
 	payload: state,
 });
 
 const TickGameClockAction = () => ({
-	type: 'TICK_GAME_CLOCK',
+	type: ActionTypes.TICK_GAME_CLOCK,
 });
 
 const GameClockTickedAction = state => ({
-	type: 'GAME_CLOCK_TICKED',
+	type: ActionTypes.GAME_CLOCK_TICKED,
 	payload: state,
 });
 
 const DecreaseGameLivesAction = () => ({
-	type: 'DECREASE_GAME_LIVES',
+	type: ActionTypes.DECREASE_GAME_LIVES,
 });
 
 const GameLivesDecreasedAction = state => ({
-	type: 'GAME_LIVES_DECREASED',
+	type: ActionTypes.GAME_LIVES_DECREASED,
 	payload: state,
 });
 
 const RestartGameClockAction = () => ({
-	type: 'RESTART_GAME_CLOCK',
+	type: ActionTypes.RESTART_GAME_CLOCK,
 });
 
 const GameClockRestartedAction = state => ({
-	type: 'GAME_CLOCK_RESTARTED',
+	type: ActionTypes.GAME_CLOCK_RESTARTED,
 	payload: state,
 });
 
 const RestartGameAction = () => ({
-	type: 'RESTART_GAME',
+	type: ActionTypes.RESTART_GAME,
 });
 
 const MoveMonsterBallAction = monsterBall => ({
-	type: 'MOVE_MONSTER_BALL',
+	type: ActionTypes.MOVE_MONSTER_BALL,
 	payload: monsterBall,
 });
 
 const MonsterBallMovedAction = state => ({
-	type: 'MONSTER_BALL_MOVED',
+	type: ActionTypes.MONSTER_BALL_MOVED,
 	payload: state,
 });
 
 const MoveMonsterBallFailedAction = reason => ({
-	type: 'MOVE_MONSTER_BALL_FAILED',
+	type: ActionTypes.MOVE_MONSTER_BALL_FAILED,
 	payload: reason,
 });
 
 const MoveCarAction = () => ({
-	type: 'MOVE_CAR',
+	type: ActionTypes.MOVE_CAR,
 });
 
 const CarMovedAction = state => ({
-	type: 'CAR_MOVED',
+	type: ActionTypes.CAR_MOVED,
 	payload: state,
 });
 
 const MoveCarFailedAction = reason => ({
-	type: 'MOVE_CAR_FAILED',
+	type: ActionTypes.MOVE_CAR_FAILED,
 	payload: reason,
 });
 
 const OwnFieldSquaresAction = ({ topLeft, topRight, bottomLeft }) => ({
-	type: 'OWN_FIELD_SQUARES',
+	type: ActionTypes.OWN_FIELD_SQUARES,
 	payload: { topLeft, topRight, bottomLeft },
+});
+
+const FieldSquareOwnedAction = state => ({
+	type: ActionTypes.FIELD_SQUARES_OWNED,
+	payload: state,
 });
 
 module.exports = {
@@ -208,4 +214,5 @@ module.exports = {
 	CarMovedAction,
 	MoveCarFailedAction,
 	OwnFieldSquaresAction,
+	FieldSquareOwnedAction,
 };

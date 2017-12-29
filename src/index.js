@@ -21,7 +21,6 @@ const play = () => {
 	store.dispatch(Actions.InitiateStatesAction());
 	console.log('>>World States initiated, use `m` command to show World States');
 	console.log('-------------------------');
-
 	showCommands();
 	console.log('-------------------------');
 	rl.prompt();
